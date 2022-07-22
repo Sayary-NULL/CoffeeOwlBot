@@ -1,3 +1,8 @@
+#user
+config.json
+.idea/
+*.sqlite
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

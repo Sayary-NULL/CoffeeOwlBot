@@ -2,6 +2,8 @@ import json
 import os
 from discord.ext import commands
 import argparse
+from loguru import logger
+from DataBase.DataBase import DataBase
 
 bot = commands.Bot(command_prefix='>')
 bot.remove_command('help')
@@ -19,16 +21,30 @@ if __name__ == '__main__':
 
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'script')
 
-    with open('config.json', 'r') as file:
+    with open('config.json', 'r', encoding='utf-8') as file:
         config = json.load(file)
+
+    db = DataBase(config['file_db'])
+
+    logger_level = 'INFO'
+
+    if arg.debug:
+        logger_level = 'DEBUG'
 
     token = config['token_owl']
     if arg.test:
         token = config['token_test']
+        logger_level = 'DEBUG'
 
+    logger.add('logs/logs_{time:YY_M_D}.log', format='[{time:YY.M.D HH:m:s}] - {level}: {message}', level=logger_level,
+              rotation='1 MB', compression='zip')
+
+    logger.info('Start load functions')
     for item in os.listdir(path):
         if not item.startswith('_'):
+            logger.debug(item)
             bot.load_extension(f'script.{item[:-3]}')
+    logger.info('End load functions')
 
-    print('run bot')
+    logger.info('Запуск')
     bot.run(token)

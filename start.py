@@ -9,6 +9,11 @@ import utils.global_variables as gv
 bot = commands.Bot(command_prefix='>')
 bot.remove_command('help')
 
+
+@bot.command()
+async def ping(ctx):
+    await ctx.send('pong')
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--test', action='store_const', const=True)
@@ -19,6 +24,8 @@ if __name__ == '__main__':
 
     with open('config.json', 'r', encoding='utf-8') as file:
         config = json.load(file)
+
+    db = DataBase(config['file_db'])
 
     logger_level = 'INFO'
 

@@ -3,7 +3,6 @@ import os
 from discord.ext import commands
 import argparse
 from loguru import logger
-from DataBase.DataBase import DataBase
 
 bot = commands.Bot(command_prefix='>')
 bot.remove_command('help')
@@ -23,8 +22,6 @@ if __name__ == '__main__':
 
     with open('config.json', 'r', encoding='utf-8') as file:
         config = json.load(file)
-
-    db = DataBase(config['file_db'])
 
     logger_level = 'INFO'
 

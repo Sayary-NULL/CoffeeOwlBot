@@ -1,3 +1,4 @@
+import json
 import discord
 from discord.ext import commands
 
@@ -13,6 +14,12 @@ class UserCommand(commands.Cog):
     @commands.command()
     async def help(self, ctx: commands.context.Context):
         await ctx.send(f'{ctx.author.mention}, у меня обед!')
+
+    @commands.command()
+    async def ver(self, ctx: commands.context.Context):
+        with open('version.json', 'r') as f:
+            js = json.load(f)
+        await ctx.send(f'{js["ver"]}')
 
 
 def setup(bot):

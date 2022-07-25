@@ -3,14 +3,11 @@ import os
 from discord.ext import commands
 import argparse
 from loguru import logger
+from DataBase.DB import DB
+import utils.global_variables as gv
 
 bot = commands.Bot(command_prefix='>')
 bot.remove_command('help')
-
-
-@bot.command()
-async def ping(ctx):
-    await ctx.send('pong')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -24,6 +21,8 @@ if __name__ == '__main__':
         config = json.load(file)
 
     logger_level = 'INFO'
+
+    gv.DataBaseClass = DB(config['file_db'])
 
     if arg.debug:
         logger_level = 'DEBUG'

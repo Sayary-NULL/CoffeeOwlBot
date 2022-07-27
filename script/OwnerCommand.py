@@ -1,8 +1,7 @@
-import json
 import discord
 from discord.ext import commands
 import utils.global_variables as gv
-from decorators.decor_command import in_channel
+from decorators.decor_command import in_channel, is_owner
 
 
 class OwnerCommand(commands.Cog):
@@ -11,10 +10,9 @@ class OwnerCommand(commands.Cog):
 
     @commands.command()
     @in_channel(is_test=True)
+    @is_owner
     async def test(self, ctx: commands.context.Context):
-        if ctx.author.id != gv.OwnerID:
-            print('NO')
-        print(gv.DataBaseClass.get_channel_status(687290997453225984))
+        await ctx.send(gv.DataBaseClass.get_channel_status(687290997453225984))
 
 
 def setup(bot):

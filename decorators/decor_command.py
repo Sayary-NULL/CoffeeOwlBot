@@ -29,3 +29,12 @@ def is_admin(fn):
             await ctx.send('Недостаточно прав')
     return decor
 
+
+def is_owner(fn):
+    @functools.wraps(fn)
+    async def decor(self, ctx: discord.ext.commands.context.Context, *args, **kwargs):
+        if ctx.author.id == gv.OwnerID:
+            await fn(self, ctx, *args, **kwargs)
+        else:
+            await ctx.send('Доступно только создателю бота')
+    return decor

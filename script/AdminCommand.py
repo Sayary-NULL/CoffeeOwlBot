@@ -22,7 +22,6 @@ class AdminCommand(commands.Cog, InitialClass):
 
     @commands.command()
     @d_is_admin
-    @in_channel(is_test=True)
     @logger.catch
     async def set_permissions_channel(self, ctx: commands.context.Context,
                                       is_base: bool = False,

@@ -41,7 +41,7 @@ class UserCommand(commands.Cog, InitialClass):
             logger.debug(f"owner: {OwnerCommand.OwnerCommand.help_str}")
             if user_is_admin(ctx.author):
                 embed.add_field(name='Group: Admin', value=AdminCommand.AdminCommand.help_str, inline=True)
-            if user_is_owner(ctx.author):
+            if user_is_owner(ctx.author) and OwnerCommand.OwnerCommand.help_str != '':
                 embed.add_field(name='Group: Owner', value=OwnerCommand.OwnerCommand.help_str, inline=True)
             await ctx.send(embed=embed)
         else:

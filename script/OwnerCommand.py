@@ -10,6 +10,7 @@ class OwnerCommand(commands.Cog, InitialClass):
     def __init__(self, bot: discord.Client):
         self.bot = bot
         self.set_help_str(OwnerCommand)
+        logger.debug(f"owner: {OwnerCommand.help_str}")
 
     @commands.command()
     @in_channel(is_test=True)

@@ -3,11 +3,13 @@ from loguru import logger
 from discord.ext import commands
 import utils.global_variables as gv
 from decorators.decor_command import in_channel, is_admin as d_is_admin
+from utils.class_for_help_command import InitialClass
 
 
-class AdminCommand(commands.Cog):
+class AdminCommand(commands.Cog, InitialClass):
     def __init__(self, bot: discord.Client):
         self.bot = bot
+        self.set_help_str(AdminCommand)
 
     @commands.command()
     @d_is_admin

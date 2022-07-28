@@ -38,7 +38,7 @@ class UserCommand(commands.Cog, InitialClass):
             embed.add_field(name='Group: User', value=UserCommand.help_str, inline=True)
             logger.debug(UserCommand.help_str)
             logger.debug(AdminCommand.AdminCommand.help_str)
-            logger.debug(OwnerCommand.OwnerCommand.help_str)
+            logger.debug(f"owner: {OwnerCommand.OwnerCommand.help_str}")
             if user_is_admin(ctx.author):
                 embed.add_field(name='Group: Admin', value=AdminCommand.AdminCommand.help_str, inline=True)
             if user_is_owner(ctx.author):

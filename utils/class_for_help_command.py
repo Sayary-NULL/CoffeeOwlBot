@@ -25,3 +25,4 @@ class InitialClass:
                     cls.help_str += f'[{par_name}]'
 
             cls.help_str += '\n'
+        cls.help_str[-1] = ''

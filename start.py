@@ -33,7 +33,7 @@ if __name__ == '__main__':
         logger_level = 'DEBUG'
 
     logger.add('logs/logs_{time:YY_M_D}.log', format='[{time:YY.M.D HH:m:s}] - {level}: {message}', level=logger_level,
-              rotation='1 MB', compression='zip')
+               rotation='1 MB', compression='zip')
 
     logger.info('Start load functions')
     for item in os.listdir(path):

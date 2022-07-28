@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from loguru import logger
 
 
 class Events(commands.Cog):
@@ -7,6 +8,7 @@ class Events(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
+    @logger.catch
     async def on_message(self, message: discord.message.Message):
         if message.author == self.bot.user:
             return

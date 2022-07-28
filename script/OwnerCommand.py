@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import utils.global_variables as gv
+from loguru import logger
 from decorators.decor_command import in_channel, is_owner
 
 
@@ -10,6 +11,7 @@ class OwnerCommand(commands.Cog):
 
     @commands.command()
     @in_channel(is_test=True)
+    @logger.catch
     @is_owner
     async def test(self, ctx: commands.context.Context):
         await ctx.send(gv.DataBaseClass.get_channel_status(687290997453225984))

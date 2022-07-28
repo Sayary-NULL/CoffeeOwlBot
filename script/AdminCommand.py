@@ -1,4 +1,5 @@
 import discord
+from loguru import logger
 from discord.ext import commands
 import utils.global_variables as gv
 from decorators.decor_command import in_channel, is_admin as d_is_admin
@@ -10,6 +11,7 @@ class AdminCommand(commands.Cog):
 
     @commands.command()
     @d_is_admin
+    @logger.catch
     async def select_channel_permissions(self, ctx: commands.context.Context):
         if (per := gv.DataBaseClass.get_channel_status(ctx.channel.id)) is not None:
             await ctx.send(per)
@@ -19,6 +21,7 @@ class AdminCommand(commands.Cog):
     @commands.command()
     @d_is_admin
     @in_channel(is_test=True)
+    @logger.catch
     async def set_permissions_channel(self, ctx: commands.context.Context,
                                       is_base: bool = False,
                                       is_command: bool = False,

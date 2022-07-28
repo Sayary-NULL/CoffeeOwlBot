@@ -1,4 +1,5 @@
 import sqlite3 as sl
+from loguru import logger
 
 
 class DB:
@@ -6,6 +7,7 @@ class DB:
         self.str_connect = f'file:{file_name}'
 
         if not self.test_connect():
+            logger.error(f'К бд нет доступа: {self.str_connect}')
             raise NameError("к бд нет доступа")
 
     def test_connect(self) -> bool:

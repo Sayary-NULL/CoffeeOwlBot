@@ -1,6 +1,9 @@
 import discord
+import random
 from discord.ext import commands
 from loguru import logger
+from utils.global_variables import DataBaseClass
+from utils.utils_methods import generate_parameter_from_trigger
 
 
 class Events(commands.Cog):
@@ -15,8 +18,17 @@ class Events(commands.Cog):
 
         mess = message.content.lower()
 
-        if mess == '<:say_paw:982188705068503090>':
-            await message.channel.send(f'{message.author.mention}, <:say_paw:982188705068503090>')
+        response_db = DataBaseClass.get_trigger_form_text(mess)
+        if not response_db:
+            return
+        id_random_response = random.randint(0, len(response_db) - 1)
+        text_response: str = response_db[id_random_response][0]
+
+        for k, v in generate_parameter_from_trigger(message).items():
+            if text_response.find(k) != -1:
+                text_response = text_response.replace(k, v)
+
+        await message.channel.send(text_response)
 
 
 def setup(bot):

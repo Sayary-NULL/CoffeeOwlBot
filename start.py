@@ -5,6 +5,7 @@ import argparse
 from loguru import logger
 from DataBase.DB import DB
 import utils.global_variables as gv
+from utils.create_tabels import create_tables
 
 bot = commands.Bot(command_prefix='>')
 bot.remove_command('help')
@@ -21,6 +22,8 @@ if __name__ == '__main__':
         config = json.load(file)
 
     logger_level = 'INFO'
+
+    create_tables(config['file_db'])
 
     gv.DataBaseClass = DB(config['file_db'])
 

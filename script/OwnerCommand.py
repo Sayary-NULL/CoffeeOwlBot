@@ -13,8 +13,10 @@ class OwnerCommand(commands.Cog):
     @in_channel(is_test=True)
     @logger.catch
     @is_owner
-    async def test(self, ctx: commands.context.Context):
-        await ctx.send(gv.DataBaseClass.get_channel_status(687290997453225984))
+    async def test(self, ctx: commands.context.Context, mess: str):
+        message: discord.Message = ctx.message
+        for item in gv.DataBaseClass.get_trigger_form_text(mess.lower()):
+            await ctx.send(item)
 
 
 def setup(bot):

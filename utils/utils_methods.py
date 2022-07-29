@@ -1,5 +1,6 @@
 import discord
 from utils import global_variables
+from datetime import datetime
 
 
 def user_is_admin(user: discord.Member):
@@ -11,6 +12,16 @@ def user_is_admin(user: discord.Member):
 
 def user_is_owner(user: discord.Member):
     return user.id == global_variables.OwnerID
+
+
+def generate_parameter_from_trigger(ctx: discord.message.Message):
+    return {
+        "{time}": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        "{user_name}": ctx.author.name,
+        "{user_mention}": ctx.author.mention,
+        "{channel_name}": ctx.channel.name,
+        "{channel_mention}": ctx.channel.mention
+    }
 
 
 def get_help_from_class(cls):

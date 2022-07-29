@@ -44,3 +44,22 @@ class DB:
         cur.execute("""update channel set is_admin = ?, is_base = ?, is_test = ?, is_command = ? where channel_id = ?""",
                     (is_admin, is_base, is_test, is_command, channel_id))
         con.commit()
+
+    def get_trigger_form_text(self, message: str = None):
+        con, cur = self.get_open_cursor()
+        if message is not None:
+            cur.execute(f"""select text_response from "trigger" where text_request == ?""", (message, ))
+        else:
+            cur.execute(f"""select trigger_id, text_request, text_response from "trigger" """)
+        return cur.fetchall()
+
+    def set_trigger(self, text_request: str, text_response: str):
+        con, cur = self.get_open_cursor()
+        cur.execute("""insert into "trigger" (text_request, text_response) values (?, ?)""",
+                    (text_request, text_response))
+        con.commit()
+
+    def del_trigger(self, id_trigger):
+        con, cur = self.get_open_cursor()
+        cur.execute("""delete from "trigger" where trigger_id = ?""", (id_trigger, ))
+        con.commit()

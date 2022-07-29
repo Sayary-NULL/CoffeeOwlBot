@@ -44,6 +44,39 @@ class AdminCommand(commands.Cog):
                                                    is_test=is_test)
             await ctx.send('Обновлено')
 
+    @commands.command()
+    @d_is_admin
+    @logger.catch
+    @in_channel(is_admin=True, is_command=True)
+    async def select_triggers(self, ctx: commands.context.Context):
+        for item in gv.DataBaseClass.get_trigger_form_text():
+            await ctx.send(f'{item[0]}) {item[1]} => {item[2]}')
+        await ctx.send('=====Триггеры закончились=====')
+
+    @commands.command()
+    @d_is_admin
+    @logger.catch
+    @in_channel(is_admin=True, is_command=True)
+    async def set_trigger(self, ctx: commands.context.Context, text_request: str, text_response: str):
+        text_request = text_request.lower()
+        text_response = text_response.lower()
+        try:
+            gv.DataBaseClass.set_trigger(text_request, text_response)
+            await ctx.send('Добавлено')
+        except:
+            await ctx.send('Произошла ошибка, обратитесь к Sayary')
+
+    @commands.command()
+    @d_is_admin
+    @logger.catch
+    @in_channel(is_admin=True, is_command=True)
+    async def del_trigger(self, ctx: commands.context.Context, id_trigger: int):
+        try:
+            gv.DataBaseClass.del_trigger(id_trigger)
+            await ctx.send('Удалено')
+        except:
+            await ctx.send('Произошла ошибка, обратитесь к Sayary')
+
 
 def setup(bot):
     bot.add_cog(AdminCommand(bot))

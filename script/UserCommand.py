@@ -40,7 +40,6 @@ class UserCommand(commands.Cog):
 
             if user_is_owner(ctx.author) and (rez := get_help_from_class(OwnerCommand.OwnerCommand)) != '':
                 embed.add_field(name='Group: Owner', value=rez, inline=True)
-                logger.debug(f'owner {rez}')
             await ctx.send(embed=embed)
         else:
             await ctx.send('HEEELP')

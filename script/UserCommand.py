@@ -67,6 +67,20 @@ class UserCommand(commands.Cog):
         emd.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon_url)
         await ctx.send(embed=emd)
 
+    @add_description('Шуточная команда "warn"')
+    @commands.command()
+    @logger.catch
+    @in_channel(is_base=True, is_command=True)
+    async def warn(self, ctx: discord.ext.commands.context.Context, user: discord.Member):
+        if user.bot:
+            return
+
+        emd = discord.Embed(color=UserColor)
+        emd.add_field(name='**Предупреждение**', value=f'Потзователю: {user.mention} - вынесено предупреждение', inline=False)
+        emd.set_image(url='https://media.discordapp.net/attachments/462236317926031370/1003229964843356190/--.jpg?width=975&height=671')
+        emd.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon_url)
+        await ctx.send(embed=emd)
+
     @add_description('Показывает текущую версию бота')
     @commands.command(aliases=['версия'])
     @logger.catch

@@ -38,3 +38,10 @@ def is_owner(fn):
         else:
             await ctx.send('Доступно только создателю бота')
     return decor
+
+
+def add_description(description: str = None):
+    def decorator(fn):
+        fn.description = description
+        return fn
+    return decorator

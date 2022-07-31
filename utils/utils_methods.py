@@ -48,3 +48,16 @@ def get_help_from_class(cls):
 
         out_str += '\n'
     return out_str[:-1]
+
+
+def get_funcs_on_name_or_aliases(func_name, cls):
+    for cls_func_name in dir(cls):
+        func = getattr(cls, cls_func_name)
+        if not callable(func) or cls_func_name.startswith('_'):
+            continue
+        if func_name == cls_func_name:
+            return func
+        if 'aliases' in dir(func):
+            if func_name in func.aliases:
+                return func
+    return None

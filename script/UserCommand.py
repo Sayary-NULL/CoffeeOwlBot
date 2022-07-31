@@ -5,6 +5,7 @@ from loguru import logger
 from discord.ext import commands
 from decorators.decor_command import in_channel, add_description
 from utils.utils_methods import user_is_admin, user_is_owner, get_help_from_class, get_funcs_on_name_or_aliases
+from utils.global_variables import UserColor, OwnerID
 
 
 class UserCommand(commands.Cog):
@@ -31,7 +32,7 @@ class UserCommand(commands.Cog):
     @in_channel(is_command=True)
     async def help(self, ctx: commands.context.Context, func_name: str = None):
         if func_name is None:
-            embed = discord.Embed(description='**Команды бота**', color=discord.colour.Colour.red())
+            embed = discord.Embed(description='**Команды бота**', color=UserColor)
             embed.add_field(name='**Параметры**', value='[] - обязательные\n<> - не обязательные', inline=False)
 
             embed.add_field(name='Group: User', value=get_help_from_class(UserCommand), inline=True)
@@ -44,7 +45,7 @@ class UserCommand(commands.Cog):
                 logger.debug(f'owner {rez}')
             await ctx.send(embed=embed)
         else:
-            embed = discord.Embed(description=f'**Справка по команде {func_name}**', color=discord.colour.Colour.blue())
+            embed = discord.Embed(description=f'**Справка по команде {func_name}**', color=UserColor)
             class_name = 'User'
 
             if (func := get_funcs_on_name_or_aliases(func_name, UserCommand)) is None:

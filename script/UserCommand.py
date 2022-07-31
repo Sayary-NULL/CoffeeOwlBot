@@ -44,6 +44,29 @@ class UserCommand(commands.Cog):
         )
         await ctx.send(embed=embed)
 
+    @add_description('Шуточная команда "бан"')
+    @commands.command(aliases=['бан'])
+    @logger.catch
+    @in_channel(is_base=True, is_command=True)
+    async def ban(self, ctx: discord.ext.commands.context.Context, user: discord.Member, text: str = None):
+        if user.bot:
+            return
+
+        url_image = 'https://media.discordapp.net/attachments/462236317926031370/464149984619528193/tumblr_oda2o7m3NR1tydz8to1_500.gif'
+
+        if user.id == OwnerID:
+            await ctx.send(f"{ctx.author.mention}, я не пойду против своего создателя!")
+            user = ctx.author
+            text = "Не уважение к моему создателю!"
+            url_image = 'https://media.discordapp.net/attachments/462236317926031370/1003226679403102248/1579887266_2020-01-24_19-57-45.gif'
+
+        emd = discord.Embed(color=UserColor)
+        emd.add_field(name='**Бан**', value=f'Пользовтель: {user.mention} - забанен', inline=False)
+        emd.add_field(name='**Причина**', value=f'{text if text is not None else "Не указанно"}', inline=False)
+        emd.set_image(url=url_image)
+        emd.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon_url)
+        await ctx.send(embed=emd)
+
     @add_description('Показывает текущую версию бота')
     @commands.command(aliases=['версия'])
     @logger.catch

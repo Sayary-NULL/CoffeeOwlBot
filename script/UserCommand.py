@@ -61,7 +61,7 @@ class UserCommand(commands.Cog):
             url_image = 'https://media.discordapp.net/attachments/462236317926031370/1003226679403102248/1579887266_2020-01-24_19-57-45.gif'
 
         emd = discord.Embed(color=UserColor)
-        emd.add_field(name='**Бан**', value=f'Пользовтель: {user.mention} - забанен', inline=False)
+        emd.add_field(name='**Бан**', value=f'Пользователь: {user.mention} - забанен', inline=False)
         emd.add_field(name='**Причина**', value=f'{text if text is not None else "Не указанно"}', inline=False)
         emd.set_image(url=url_image)
         emd.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon_url)
@@ -76,7 +76,7 @@ class UserCommand(commands.Cog):
             return
 
         emd = discord.Embed(color=UserColor)
-        emd.add_field(name='**Предупреждение**', value=f'Потзователю: {user.mention} - вынесено предупреждение', inline=False)
+        emd.add_field(name='**Предупреждение**', value=f'Пользователю: {user.mention} - вынесено предупреждение', inline=False)
         emd.set_image(url='https://media.discordapp.net/attachments/462236317926031370/1003229964843356190/--.jpg?width=975&height=671')
         emd.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon_url)
         await ctx.send(embed=emd)

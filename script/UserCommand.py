@@ -3,8 +3,8 @@ import discord
 from script import AdminCommand, OwnerCommand
 from loguru import logger
 from discord.ext import commands
-from decorators.decor_command import in_channel
-from utils.utils_methods import user_is_admin, user_is_owner, get_help_from_class
+from decorators.decor_command import in_channel, add_description
+from utils.utils_methods import user_is_admin, user_is_owner, get_help_from_class, get_funcs_on_name_or_aliases
 
 
 class UserCommand(commands.Cog):

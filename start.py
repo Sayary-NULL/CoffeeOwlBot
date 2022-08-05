@@ -10,6 +10,19 @@ from utils.create_tabels import create_tables
 bot = commands.Bot(command_prefix='>')
 bot.remove_command('help')
 
+
+@bot.command()
+async def reload(ctx: commands.context.Context):
+    if ctx.author.id != gv.OwnerID:
+        return
+    logger.info('Start reload functions')
+    for item in os.listdir(path):
+        if not item.startswith('_'):
+            logger.debug(item)
+            bot.reload_extension(f'script.{item[:-3]}')
+    logger.info('End reload functions')
+    await ctx.send(f'{ctx.author.mention}, перезагрузка модулей завершена')
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--test', action='store_const', const=True)

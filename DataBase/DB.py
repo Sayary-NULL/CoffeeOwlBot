@@ -23,7 +23,8 @@ class DB:
 
     def get_channel_status(self, channel_id: int):
         con, cur = self.get_open_cursor()
-        cur.execute("""select * from channel where channel_id = ?""", (channel_id, ))
+        cur.execute("""select channel_id, is_base, is_command, is_admin, is_test from channel where channel_id = ?""",
+                    (channel_id,))
         return cur.fetchone()
 
     def set_channel_status(self, channel_id: int,

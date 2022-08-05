@@ -9,11 +9,13 @@ def in_channel(is_base: bool = False, is_command: bool = False, is_admin: bool =
         async def decor2(self, ctx: discord.ext.commands.context.Context, *args, **kwargs):
             channel_id = ctx.channel.id
             rez = gv.DataBaseClass.get_channel_status(channel_id)
-            if rez is not None:
-                if rez[1] == is_admin or rez[2] == is_base or rez[3] == is_test or rez[4] == is_command:
-                    await fn(self, ctx, *args, **kwargs)
-            else:
-                await ctx.send('канал не подходит под условия')
+            if rez is None or (not rez[4] and is_test) or (not rez[3] and is_admin):
+                print(rez)
+                await ctx.send('Данная команда не может быть выполнена в данном канале')
+                return
+
+            if rez[4] or rez[3] or (rez[2] and is_command) or (rez[1] and is_base):
+                await fn(self, ctx, *args, **kwargs)
         return decor2
     return decor
 

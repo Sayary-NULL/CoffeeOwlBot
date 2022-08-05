@@ -25,7 +25,7 @@ def generate_parameter_from_trigger(ctx: discord.message.Message):
 
 
 def get_help_from_class(cls):
-    out_str = ''
+    out_str = '```'
     ignor_list = set()
     for base in cls.__bases__:
         for func_name in dir(base):
@@ -37,7 +37,7 @@ def get_help_from_class(cls):
             continue
 
         i += 1
-        out_str += f'{i}: {func_name} '
+        out_str += f'> {func_name} '
         for par_name, par_type in func.__dict__['params'].items():
             if par_name == 'self' or par_name == 'ctx':
                 continue
@@ -47,7 +47,7 @@ def get_help_from_class(cls):
                 out_str += f'[{par_name}] '
 
         out_str += '\n'
-    return out_str[:-1]
+    return out_str[:-1] + '```'
 
 
 def get_funcs_on_name_or_aliases(func_name, cls):

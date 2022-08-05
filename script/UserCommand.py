@@ -99,13 +99,13 @@ class UserCommand(commands.Cog):
             embed = discord.Embed(description='**Команды бота**', color=UserColor)
             embed.add_field(name='**Параметры**', value='[] - обязательные\n<> - не обязательные', inline=False)
 
-            embed.add_field(name='Group: User', value=get_help_from_class(UserCommand), inline=True)
+            embed.add_field(name='Group: User', value=get_help_from_class(UserCommand), inline=False)
 
             if user_is_admin(ctx.author):
-                embed.add_field(name='Group: Admin', value=get_help_from_class(AdminCommand.AdminCommand), inline=True)
+                embed.add_field(name='Group: Admin', value=get_help_from_class(AdminCommand.AdminCommand), inline=False)
 
             if user_is_owner(ctx.author) and (rez := get_help_from_class(OwnerCommand.OwnerCommand)) != '':
-                embed.add_field(name='Group: Owner', value=rez, inline=True)
+                embed.add_field(name='Group: Owner', value=rez, inline=False)
             await ctx.send(embed=embed)
         else:
             embed = discord.Embed(description=f'**Справка по команде {func_name}**', color=UserColor)

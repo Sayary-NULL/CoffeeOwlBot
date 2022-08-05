@@ -49,8 +49,14 @@ class AdminCommand(commands.Cog):
     @logger.catch
     @in_channel(is_admin=True, is_command=True)
     async def select_triggers(self, ctx: commands.context.Context):
-        for item in gv.DataBaseClass.get_trigger_form_text():
-            await ctx.send(f'{item[0]}) {item[1]} => {item[2]}')
+        str_out = ''
+        for i, item in enumerate(gv.DataBaseClass.get_trigger_form_text()):
+            str_out += f'{item[0]}) {item[1]} => {item[2]}\n'
+            if i % 5 == 0 and i != 0:
+                await ctx.send(str_out)
+                str_out = ''
+        if str_out != '':
+            await ctx.send(str_out)
         await ctx.send('=====Триггеры закончились=====')
 
     @commands.command()

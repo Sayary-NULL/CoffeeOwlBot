@@ -35,11 +35,15 @@ class OwnerCommand(commands.Cog):
         else:
             channel = ctx.channel
 
-        await channel.send(self.url)
-        if self.title is not None:
-            await channel.send(self.title)
-        await channel.send(self.desc)
-        await channel.send(self.sign)
+        try:
+            await channel.send(self.url)
+            if self.title is not None:
+                await channel.send(self.title)
+            await channel.send(self.desc)
+            await channel.send(self.sign)
+        except Exception as e:
+            await ctx.send("Ошибка отправки сообщения.")
+            logger.error(e)
 
     @commands.command()
     @in_channel(is_admin=True)

@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import utils.global_variables as gv
 from loguru import logger
-from decorators.decor_command import in_channel, is_owner
+from decorators.decor_command import in_channel, is_owner, add_description
 
 
 class OwnerCommand(commands.Cog):
@@ -22,17 +22,37 @@ class OwnerCommand(commands.Cog):
     async def test(self, ctx: commands.context.Context):
         await ctx.send('Ok')
 
-    @commands.command()
+    @add_description('команда для публекации новостей')
+    @commands.group()
     @in_channel(is_admin=True)
     @logger.catch
     @is_owner
-    async def post_news(self, ctx: commands.context.Context):
+    async def news(self, ctx: commands.context.Context):
+        if ctx.invoked_subcommand is None:
+            await ctx.send('Invalid git command passed...')
+
+    @news.command()
+    @logger.catch
+    async def desc(self, ctx: commands.context.Context, desc: str):
+        self.desc = desc
+
+    @news.command()
+    @logger.catch
+    async def title(self, ctx: commands.context.Context, title: str):
+        self.title = title
+
+    @news.command()
+    @logger.catch
+    async def image(self, ctx: commands.context.Context, url: str):
+        self.url = url
+
+    @news.command()
+    @logger.catch
+    async def post(self, ctx: commands.context.Context, channel: discord.TextChannel = None):
         if self.desc is None:
             return
 
-        if self.channel_id is not None:
-            channel: discord.TextChannel = ctx.guild.get_channel(self.channel_id)
-        else:
+        if self.channel_id is None:
             channel = ctx.channel
 
         try:
@@ -44,41 +64,6 @@ class OwnerCommand(commands.Cog):
         except Exception as e:
             await ctx.send("Ошибка отправки сообщения.")
             logger.error(e)
-
-    @commands.command()
-    @in_channel(is_admin=True)
-    @logger.catch
-    @is_owner
-    async def add_image(self, ctx: commands.context.Context, url: str):
-        self.url = url
-
-    @commands.command()
-    @in_channel(is_admin=True)
-    @logger.catch
-    @is_owner
-    async def add_title(self, ctx: commands.context.Context, title: str):
-        self.title = title
-
-    @commands.command()
-    @in_channel(is_admin=True)
-    @logger.catch
-    @is_owner
-    async def add_desc(self, ctx: commands.context.Context, desc: str):
-        self.desc = desc
-
-    @commands.command()
-    @in_channel(is_admin=True)
-    @logger.catch
-    @is_owner
-    async def add_sign(self, ctx: commands.context.Context, sign: str):
-        self.sign = sign
-
-    @commands.command()
-    @in_channel(is_admin=True)
-    @logger.catch
-    @is_owner
-    async def set_channel(self, ctx: commands.context.Context, channel_id: int):
-        self.channel_id = channel_id
 
 
 def setup(bot):

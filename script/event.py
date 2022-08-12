@@ -30,6 +30,11 @@ class Events(commands.Cog):
 
         await message.channel.send(text_response)
 
+    @commands.Cog.listener()
+    @logger.catch
+    async def on_ready(self):
+        logger.info('Bot ready!')
+
 
 def setup(bot):
     bot.add_cog(Events(bot))

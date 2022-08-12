@@ -29,22 +29,25 @@ class OwnerCommand(commands.Cog):
     @is_owner
     async def news(self, ctx: commands.context.Context):
         if ctx.invoked_subcommand is None:
-            await ctx.send('Invalid git command passed...')
+            await ctx.send(f'{ctx.author.mention}, команды в группе не найдены')
 
     @news.command()
     @logger.catch
     async def desc(self, ctx: commands.context.Context, desc: str):
         self.desc = desc
+        await ctx.send('Описание установлено')
 
     @news.command()
     @logger.catch
     async def title(self, ctx: commands.context.Context, title: str):
         self.title = title
+        await ctx.send('Заголовок установлен')
 
     @news.command()
     @logger.catch
     async def image(self, ctx: commands.context.Context, url: str):
         self.url = url
+        await ctx.send('Изображение установлено')
 
     @news.command()
     @logger.catch

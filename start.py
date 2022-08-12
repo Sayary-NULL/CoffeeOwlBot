@@ -19,7 +19,7 @@ async def reload(ctx: commands.context.Context):
     for item in os.listdir(path):
         if not item.startswith('_'):
             logger.debug(item)
-            bot.reload_extension(f'script.{item[:-3]}')
+            await bot.reload_extension(f'script.{item[:-3]}')
     logger.info('End reload functions')
     await ctx.send(f'{ctx.author.mention}, перезагрузка модулей завершена')
 

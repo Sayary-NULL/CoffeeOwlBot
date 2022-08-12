@@ -5,7 +5,8 @@ from script import AdminCommand, OwnerCommand
 from loguru import logger
 from discord.ext import commands
 from decorators.decor_command import in_channel, add_description
-from utils.utils_methods import user_is_admin, user_is_owner, get_help_from_class, get_funcs_on_name_or_aliases
+from utils.utils_methods import user_is_admin, user_is_owner, get_help_from_class, get_funcs_on_name_or_aliases, \
+    get_all_group, get_param_on_func
 from utils.global_variables import UserColor, OwnerID
 
 
@@ -90,15 +91,13 @@ class UserCommand(commands.Cog):
             js = json.load(f)
         await ctx.send(f'версия: {js["ver"]}')
 
-    @add_description('`>help` для большей подробности')
+    @add_description('>help для большей подробности')
     @commands.command()
     @logger.catch
     @in_channel(is_command=True)
     async def help(self, ctx: commands.context.Context, func_name: str = None):
         if func_name is None:
             embed = discord.Embed(description='**Команды бота**', color=UserColor)
-            embed.add_field(name='**Параметры**', value='[] - обязательные\n<> - не обязательные', inline=False)
-
             embed.add_field(name='Group: User', value=get_help_from_class(UserCommand), inline=False)
 
             if user_is_admin(ctx.author):
@@ -115,7 +114,7 @@ class UserCommand(commands.Cog):
                 class_name = 'Admin'
                 if (func := get_funcs_on_name_or_aliases(func_name, AdminCommand.AdminCommand)) is None:
                     class_name = 'Owner'
-                    func = get_funcs_on_name_or_aliases(func_name, AdminCommand.AdminCommand)
+                    func = get_funcs_on_name_or_aliases(func_name, OwnerCommand.OwnerCommand)
 
             if func is None:
                 embed.add_field(
@@ -126,17 +125,22 @@ class UserCommand(commands.Cog):
                 await ctx.send(embed=embed)
                 return
 
+            if (group := get_all_group(func_name, UserCommand)) is None:
+                if (group := get_all_group(func_name, AdminCommand.AdminCommand)) is None:
+                    group = get_all_group(func_name, OwnerCommand.OwnerCommand)
+
             embed.add_field(
                 name='**Оригинальное имя**',
-                value=func.name,
+                value='```' + func.name + '```',
                 inline=False
             )
 
             embed.add_field(
                 name='**Класс доступа**',
-                value=class_name,
+                value='```' + class_name + '```',
                 inline=False
             )
+
             description = None
             if 'description' in dir(func):
                 if func.description is not None:
@@ -148,14 +152,34 @@ class UserCommand(commands.Cog):
 
             embed.add_field(
                 name='**Описание**',
-                value=description,
+                value='```' + description + '```',
                 inline=False
             )
 
+            if group is not None:
+                group_lst = '```'
+                for i, item in enumerate(group):
+                    group_lst += f'{i + 1}) {item}\n'
+                group_lst += '```'
+
+                embed.add_field(
+                    name='**Элементы группы**',
+                    value=group_lst,
+                    inline=False
+                )
+
+            if group is None:
+                embed.add_field(
+                    name='**Параметры функции**',
+                    value='[] - обязательные\n<> - не обязательные\n' + get_param_on_func(func),
+                    inline=False
+                )
+
             if len(func.aliases) != 0:
-                aliases = ''
+                aliases = '```'
                 for i, alias in enumerate(func.aliases):
                     aliases += f'{i + 1}) {alias}\n'
+                aliases = aliases[:-1] + '```'
                 embed.add_field(
                     name='**Псевдонимы**',
                     value=aliases,

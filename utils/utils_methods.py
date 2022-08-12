@@ -24,6 +24,19 @@ def generate_parameter_from_trigger(ctx: discord.message.Message):
     }
 
 
+def get_param_on_func(func):
+    out_str = '```'
+    out_str += str(func) + ' '
+    for par_name, par_type in func.__dict__['params'].items():
+        if par_name == 'self' or par_name == 'ctx':
+            continue
+        if par_type.default is None:
+            out_str += f'<{par_name}> '
+        else:
+            out_str += f'[{par_name}] '
+    return out_str[:-1] + '```'
+
+
 def get_help_from_class(cls):
     out_str = '```'
     ignor_list = set()
@@ -36,17 +49,15 @@ def get_help_from_class(cls):
         if not callable(func) or func_name.startswith('_') or func_name in ignor_list:
             continue
 
-        i += 1
+        if func.__dict__['parent'] is not None:
+            continue
         out_str += f'> {func_name} '
-        for par_name, par_type in func.__dict__['params'].items():
-            if par_name == 'self' or par_name == 'ctx':
-                continue
-            if par_type.default is None:
-                out_str += f'<{par_name}> '
-            else:
-                out_str += f'[{par_name}] '
-
+        if 'description' in dir(func):
+            if func.description is not None:
+                if func.description.strip() != '':
+                    out_str += f'- {func.description}'
         out_str += '\n'
+
     return out_str[:-1] + '```'
 
 
@@ -61,3 +72,21 @@ def get_funcs_on_name_or_aliases(func_name, cls):
             if func_name in func.aliases:
                 return func
     return None
+
+
+def get_all_group(group_name, cls):
+    out_lst = []
+    for cls_func_name in dir(cls):
+        func = getattr(cls, cls_func_name)
+        if not callable(func) or cls_func_name.startswith('_'):
+            continue
+
+        param = func.__dict__
+
+        if '__original_kwargs__' in param:
+            kwargs = param['__original_kwargs__']
+            if 'parent' in kwargs:
+                if str(kwargs['parent']) == group_name:
+                    out_lst.append(cls_func_name)
+
+    return out_lst if len(out_lst) != 0 else None

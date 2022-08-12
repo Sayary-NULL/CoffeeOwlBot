@@ -22,7 +22,7 @@ class OwnerCommand(commands.Cog):
     async def test(self, ctx: commands.context.Context):
         await ctx.send('Ok')
 
-    @add_description('команда для публекации новостей')
+    @add_description('команда для публикации новостей')
     @commands.group()
     @in_channel(is_admin=True)
     @logger.catch

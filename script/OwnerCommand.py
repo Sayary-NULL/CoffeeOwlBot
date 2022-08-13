@@ -22,6 +22,14 @@ class OwnerCommand(commands.Cog):
     async def test(self, ctx: commands.context.Context):
         await ctx.send('Ok')
 
+    @commands.command()
+    @in_channel(is_base=True)
+    @logger.catch
+    @is_owner
+    async def sleep(self, ctx: commands.context.Context):
+        await ctx.send('Доугукался, пора спать)')
+        await self.bot.close()
+
     @add_description('команда для публикации новостей')
     @commands.group()
     @in_channel(is_admin=True)

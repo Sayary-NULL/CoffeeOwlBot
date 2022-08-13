@@ -35,6 +35,16 @@ class Events(commands.Cog):
     async def on_ready(self):
         logger.info('Bot ready!')
 
+    @commands.Cog.listener()
+    @logger.catch
+    async def on_connect(self):
+        logger.info('Bot connect!')
+
+    @commands.Cog.listener()
+    @logger.catch
+    async def on_error(self, event, *args, **kwargs):
+        logger.error(event, *args, **kwargs)
+
 
 def setup(bot):
     bot.add_cog(Events(bot))

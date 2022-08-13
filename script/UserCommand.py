@@ -21,12 +21,12 @@ class UserCommand(commands.Cog):
     async def hello(self, ctx: commands.context.Context):
         await ctx.send(f'{ctx.author.mention}, hello!')
 
-    @add_description('Выбирает из строки случайный текст, разделенный символом ";"')
+    @add_description('Случайно выбирает элемент, разделитель = ","')
     @commands.command(aliases=['случай', 'random'])
     @logger.catch
     @in_channel(is_base=True, is_command=True)
-    async def roll(self, ctx: commands.context.Context, roll_text: str):
-        roll_arr = [roll.strip() for roll in roll_text.split(';')]
+    async def roll(self, ctx: commands.context.Context, *roll_text: str):
+        roll_arr = [roll.strip(', ;') for roll in roll_text]
 
         embed = discord.Embed(color=UserColor)
         random_id = random.randint(0, len(roll_arr)-1)

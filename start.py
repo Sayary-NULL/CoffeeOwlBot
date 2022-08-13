@@ -1,5 +1,6 @@
 import json
 import os
+import asyncio
 from discord.ext import commands
 import argparse
 from loguru import logger
@@ -58,5 +59,13 @@ if __name__ == '__main__':
             bot.load_extension(f'script.{item[:-3]}')
     logger.info('End load functions')
 
-    logger.info('Запуск')
-    bot.run(token)
+    with open('version.json', 'r') as f:
+        ver = json.load(f)['ver']
+
+    logger.info(f'Запуск бота версии: {ver}')
+
+    ioloop = asyncio.get_event_loop()
+    ioloop.run_until_complete(asyncio.wait([ioloop.create_task(bot.start(token))]))
+    ioloop.close()
+
+    logger.info('Бот выключен')

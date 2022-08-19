@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 import utils.global_variables as gv
 from loguru import logger
-from decorators.decor_command import in_channel, is_owner, add_description
+from decorators.decor_command import add_description
+from decorators.chekers import checks, only_false, is_owner, in_channel
 
 
 class OwnerCommand(commands.Cog):
@@ -14,49 +15,50 @@ class OwnerCommand(commands.Cog):
         self.desc = None
 
     @commands.command()
-    @in_channel(is_admin=True)
     @logger.catch
-    @is_owner
+    @checks(is_owner, in_channel(is_admin=True))
     async def test(self, ctx: commands.context.Context):
         await ctx.send('Ok')
 
     @commands.command()
-    @in_channel(is_base=True)
     @logger.catch
-    @is_owner
+    @checks(is_owner, in_channel(is_base=True))
     async def sleep(self, ctx: commands.context.Context):
         await ctx.send('Доугукался, пора спать)')
         await self.bot.close()
 
     @add_description('команда для публикации новостей')
     @commands.group()
-    @in_channel(is_admin=True)
     @logger.catch
-    @is_owner
+    @checks(is_owner, in_channel(is_admin=True))
     async def news(self, ctx: commands.context.Context):
         if ctx.invoked_subcommand is None:
             await ctx.send(f'{ctx.author.mention}, команды в группе не найдены')
 
     @news.command()
     @logger.catch
+    @checks(is_owner, in_channel(is_admin=True), err_message=False)
     async def desc(self, ctx: commands.context.Context, desc: str):
         self.desc = desc
         await ctx.send('Описание установлено')
 
     @news.command()
     @logger.catch
+    @checks(is_owner, in_channel(is_admin=True), err_message=False)
     async def title(self, ctx: commands.context.Context, title: str):
         self.title = title
         await ctx.send('Заголовок установлен')
 
     @news.command()
     @logger.catch
+    @checks(is_owner, in_channel(is_admin=True), err_message=False)
     async def image(self, ctx: commands.context.Context, url: str):
         self.url = url
         await ctx.send('Изображение установлено')
 
     @news.command()
     @logger.catch
+    @checks(is_owner, in_channel(is_admin=True), err_message=False)
     async def post(self, ctx: commands.context.Context, channel: discord.TextChannel = None):
         if self.desc is None:
             return

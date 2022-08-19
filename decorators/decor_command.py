@@ -10,7 +10,6 @@ def in_channel(is_base: bool = False, is_command: bool = False, is_admin: bool =
             channel_id = ctx.channel.id
             rez = gv.DataBaseClass.get_channel_status(channel_id)
             if rez is None or (not rez[4] and is_test) or (not rez[3] and is_admin):
-                print(rez)
                 await ctx.send('Данная команда не может быть выполнена в данном канале')
                 return
 

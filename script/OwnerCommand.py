@@ -12,8 +12,6 @@ class OwnerCommand(commands.Cog):
                    '?width=1193&height=671 '
         self.title = None
         self.desc = None
-        self.channel_id = None
-        self.sign = "Автор: <@329653972728020994>"
 
     @commands.command()
     @in_channel(is_admin=True)
@@ -63,7 +61,7 @@ class OwnerCommand(commands.Cog):
         if self.desc is None:
             return
 
-        if self.channel_id is None:
+        if channel is None:
             channel = ctx.channel
 
         try:
@@ -71,7 +69,7 @@ class OwnerCommand(commands.Cog):
             if self.title is not None:
                 await channel.send(self.title)
             await channel.send(self.desc)
-            await channel.send(self.sign)
+            await channel.send(f'Автор: {ctx.author.mention}')
         except Exception as e:
             await ctx.send("Ошибка отправки сообщения.")
             logger.error(e)

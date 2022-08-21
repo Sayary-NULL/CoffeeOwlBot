@@ -6,3 +6,5 @@ DataBaseClass: DB = None
 UserColor = discord.colour.Colour.blue()
 AdminColor = discord.colour.Colour.red()
 OwnerColor = discord.colour.Colour.green()
+TestBot: bool = False
+ISPostNasaNews = False

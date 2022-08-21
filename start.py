@@ -48,6 +48,7 @@ if __name__ == '__main__':
     if arg.test:
         token = config['token_test']
         logger_level = 'DEBUG'
+        gv.TestBot = True
 
     logger.add('logs/logs_{time:YY_M_D}.log', format='[{time:YY.M.D HH:m:s}] - {level}: {message}', level=logger_level,
                rotation='1 MB', compression='zip')

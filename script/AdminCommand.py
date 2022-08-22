@@ -121,8 +121,8 @@ class AdminCommand(commands.Cog):
             user = ctx.author
             text = "Не уважение к моему создателю!"
             url_image = 'https://media.discordapp.net/attachments/462236317926031370/1003226679403102248/1579887266_2020-01-24_19-57-45.gif'
-        """else:
-            await user.ban(reason=reason, delete_message_days=del_message_days)"""
+        else:
+            await user.ban(reason=reason, delete_message_days=del_message_days)
 
         emd = discord.Embed(color=gv.AdminColor)
         emd.add_field(name='**Бан**', value=f'К пользователю {user.mention} применена высшая мера наказания', inline=False)

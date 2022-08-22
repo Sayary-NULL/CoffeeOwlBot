@@ -26,7 +26,7 @@ class UserCommand(commands.Cog):
     @logger.catch
     @in_channel(is_base=True, is_command=True)
     async def roll(self, ctx: commands.context.Context, *roll_text: str):
-        roll_arr = [roll.strip(', ;') for roll in roll_text]
+        roll_arr = [roll.split(', ;') for roll in roll_text]
 
         embed = discord.Embed(color=UserColor)
         random_id = random.randint(0, len(roll_arr)-1)

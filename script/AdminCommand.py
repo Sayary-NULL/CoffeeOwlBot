@@ -105,7 +105,7 @@ class AdminCommand(commands.Cog):
     @admin.command(name='ban')
     @logger.catch
     @d_is_admin
-    @in_channel(is_admin=True, is_base=True)
+    @in_channel(is_base=True, is_command=True)
     async def ban(self, ctx: commands.context.Context, user: discord.Member, reason: str = None,
                        del_message_days: int = None):
         if user.bot:

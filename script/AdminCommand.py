@@ -137,6 +137,13 @@ class AdminCommand(commands.Cog):
     async def warn(self, ctx: commands.context.Context, user: discord.Member, reason: str = None):
         pass
 
+    @admin.command()
+    @d_is_admin
+    @logger.catch
+    def setnasanews(self, ctx: commands.context.Context, status: bool = False):
+        gv.ISPostNasaNews = status
+        await ctx.send(f'Новости {"включены" if status else "выключены"}')
+
 
 def setup(bot):
     bot.add_cog(AdminCommand(bot))

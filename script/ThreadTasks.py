@@ -14,7 +14,7 @@ class ThreadTasks(commands.Cog):
         self.index = 0
         self.bot: Bot = bot
         self.news_nasa.start()
-        self.old_date = None
+        self.old_date = datetime.now().date()
 
     def cog_unload(self):
         self.news_nasa.cancel()
@@ -31,8 +31,6 @@ class ThreadTasks(commands.Cog):
         date = datetime.now().date()
         time = datetime.now().time()
 
-        logger.info('Start task news_nasa')
-
         if gv.ISDebug:
             logger.debug(f'nasa_news: guild_id - {guild_id}, channel_id - {channel_id}, '
                          f'status - {"on" if gv.ISPostNasaNews else "off" }, '
@@ -41,13 +39,14 @@ class ThreadTasks(commands.Cog):
                          f'old_date - {self.old_date}')
 
         if not gv.ISPostNasaNews:
-            logger.info('skip task news_nasa')
+            logger.info('NASA news - Off')
             return
 
-        if self.old_date is not None and date > self.old_date and time.hour != 8:
-            logger.debug('skip nasa_news')
+        if self.old_date is not None and (date <= self.old_date or time.hour != 8):
+            logger.info('Start task news_nasa - Off')
             return
 
+        logger.info('Start task news_nasa - On')
         self.old_date = date
 
         guild: discord.Guild = self.bot.get_guild(guild_id)

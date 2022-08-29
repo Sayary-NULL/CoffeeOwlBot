@@ -24,17 +24,25 @@ class ThreadTasks(commands.Cog):
         guild_id = 484402073744703498
         channel_id = 687285704849489935
 
-        if not gv.ISPostNasaNews:
-            return
-
-        logger.info('Start task news_nasa')
-
-        if True:
+        if gv.TestBot:
             guild_id = 435485527156981770
             channel_id = 531541696995917844
 
         date = datetime.now().date()
         time = datetime.now().time()
+
+        logger.info('Start task news_nasa')
+
+        if gv.ISDebug:
+            logger.debug(f'nasa_news: guild_id - {guild_id}, channel_id - {channel_id}, '
+                         f'status - {"on" if gv.ISPostNasaNews else "off" }, '
+                         f'data - {date} '
+                         f'time - {time} '
+                         f'old_date - {self.old_date}')
+
+        if not gv.ISPostNasaNews:
+            logger.info('skip task news_nasa')
+            return
 
         if self.old_date is not None and date > self.old_date and time.hour != 8:
             logger.debug('skip nasa_news')

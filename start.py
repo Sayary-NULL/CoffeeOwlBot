@@ -43,6 +43,7 @@ if __name__ == '__main__':
 
     if arg.debug:
         logger_level = 'DEBUG'
+        gv.ISDebug = True
 
     token = config['token_owl']
     if arg.test:

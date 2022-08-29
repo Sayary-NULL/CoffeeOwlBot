@@ -27,7 +27,7 @@ async def reload(ctx: commands.context.Context):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--test', action='store_const', const=True)
-    parser.add_argument('-d', '--debug', action='store_const', const=False)
+    parser.add_argument('-d', '--debug', action='store_const', const=True)
     arg = parser.parse_args()
 
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'script')
@@ -40,12 +40,13 @@ if __name__ == '__main__':
     create_tables(config['file_db'])
 
     gv.DataBaseClass = DB(config['file_db'])
+    token = config['token_owl']
 
-    if arg.debug:
+    if arg.debug or arg.test:
+        logger.debug('Mode BEBUG on')
         logger_level = 'DEBUG'
         gv.ISDebug = True
 
-    token = config['token_owl']
     if arg.test:
         token = config['token_test']
         logger_level = 'DEBUG'

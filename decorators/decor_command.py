@@ -1,6 +1,7 @@
 import discord.ext.commands
 import functools
 import utils.global_variables as gv
+from loguru import logger
 
 
 def in_channel(is_base: bool = False, is_command: bool = False, is_admin: bool = False, is_test: bool = False):
@@ -46,3 +47,20 @@ def add_description(description: str = None):
         fn.description = description
         return fn
     return decorator
+
+
+def write_log(func_name: str):
+    def decor(fn):
+        @functools.wraps(fn)
+        async def wrapper(self, ctx: discord.ext.commands.context.Context, *args, **kwargs):
+            logger.info(f'on user: "{ctx.author.name}" id: {ctx.author.id}, '
+                        f'on channel "{ctx.channel.name}" id: {ctx.channel.id}, '
+                        f'mention func "{func_name}" '
+                        f'on parametrs args: {args} kwargs: {kwargs}')
+            await fn(self, ctx, *args, **kwargs)
+
+        return wrapper
+
+    return decor
+
+

@@ -31,19 +31,18 @@ class ThreadTasks(commands.Cog):
         date = datetime.now().date()
         time = datetime.now().time()
 
-        if gv.ISDebug:
-            logger.debug(f'nasa_news: guild_id - {guild_id}, channel_id - {channel_id}, '
-                         f'status - {"on" if gv.ISPostNasaNews else "off" }, '
-                         f'data - {date} '
-                         f'time - {time} '
-                         f'old_date - {self.old_date}')
+        logger.debug(f'nasa_news: guild_id - {guild_id}, channel_id - {channel_id}, '
+                     f'status - {"on" if gv.ISPostNasaNews else "off" }, '
+                     f'data - {date} '
+                     f'time - {time} '
+                     f'old_date - {self.old_date}')
 
         if not gv.ISPostNasaNews:
-            logger.info('NASA news - Off')
+            logger.debug('NASA news - Off')
             return
 
         if self.old_date is not None and (date <= self.old_date or time.hour != 8):
-            logger.info('Start task news_nasa - Off')
+            logger.debug('Start task news_nasa - Off')
             return
 
         logger.info('Start task news_nasa - On')

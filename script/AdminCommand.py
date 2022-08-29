@@ -2,7 +2,7 @@ import discord
 from loguru import logger
 from discord.ext import commands
 import utils.global_variables as gv
-from decorators.decor_command import in_channel, is_admin as d_is_admin, add_description
+from decorators.decor_command import in_channel, is_admin as d_is_admin, add_description, write_log
 
 
 class AdminCommand(commands.Cog):
@@ -30,6 +30,7 @@ class AdminCommand(commands.Cog):
     @channel.command()
     @d_is_admin
     @logger.catch
+    @write_log('get permissions')
     async def getperm(self, ctx: commands.context.Context):
         if (per := gv.DataBaseClass.get_channel_status(ctx.channel.id)) is not None:
             await ctx.send(f'is_base = {per[1]}\nis_command = {per[2]}\nis_admin = {per[3]}\nis_test = {per[4]}')
@@ -39,6 +40,7 @@ class AdminCommand(commands.Cog):
     @channel.command()
     @d_is_admin
     @logger.catch
+    @write_log('set permissions')
     async def setperm(self, ctx: commands.context.Context,
                                       is_base: bool = False,
                                       is_command: bool = False,
@@ -66,6 +68,7 @@ class AdminCommand(commands.Cog):
     @d_is_admin
     @logger.catch
     @in_channel(is_admin=True, is_command=True)
+    @write_log('select trigger')
     async def select(self, ctx: commands.context.Context):
         str_out = ''
         for i, item in enumerate(gv.DataBaseClass.get_trigger_form_text()):
@@ -81,6 +84,7 @@ class AdminCommand(commands.Cog):
     @d_is_admin
     @logger.catch
     @in_channel(is_admin=True, is_command=True)
+    @write_log('set trigger')
     async def set(self, ctx: commands.context.Context, text_request: str, text_response: str):
         text_request = text_request.lower()
         text_response = text_response.lower()
@@ -90,10 +94,11 @@ class AdminCommand(commands.Cog):
         except:
             await ctx.send('Произошла ошибка, обратитесь к Sayary')
 
-    @trigger.command()
+    @trigger.command(name='del')
     @d_is_admin
     @logger.catch
     @in_channel(is_admin=True, is_command=True)
+    @write_log('del trigger')
     async def delt(self, ctx: commands.context.Context, id_trigger: int):
         try:
             gv.DataBaseClass.del_trigger(id_trigger)
@@ -106,6 +111,7 @@ class AdminCommand(commands.Cog):
     @logger.catch
     @d_is_admin
     @in_channel(is_base=True, is_command=True)
+    @write_log('admin ban')
     async def ban(self, ctx: commands.context.Context, user: discord.Member, reason: str = None,
                        del_message_days: int = None):
         if user.bot:
@@ -134,12 +140,14 @@ class AdminCommand(commands.Cog):
     @admin.command()
     @d_is_admin
     @logger.catch
+    @write_log('admin warn')
     async def warn(self, ctx: commands.context.Context, user: discord.Member, reason: str = None):
         pass
 
     @admin.command()
     @d_is_admin
     @logger.catch
+    @write_log('set nasa_news')
     async def setnasanews(self, ctx: commands.context.Context, status: bool = False):
         gv.ISPostNasaNews = status
         await ctx.send(f'Новости {"включены" if status else "выключены"}')

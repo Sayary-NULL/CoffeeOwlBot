@@ -42,8 +42,15 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     @logger.catch
-    async def on_error(self, event, *args, **kwargs):
-        logger.error(event, *args, **kwargs)
+    async def on_error(self, event):
+        logger.error(event)
+
+    @commands.Cog.listener()
+    @logger.catch
+    async def on_command_error(self, ctx: discord.ext.commands.context.Context, exception, *args, **kwargs):
+        logger.error(f'user: "{ctx.author.name}"({ctx.author.id}), on channel: "{ctx.channel.name}"({ctx.channel.id}), '
+                     f'error message: {exception}')
+        await ctx.send(f'{ctx.author.mention}, произошла ошибка: {exception}')
 
 
 def setup(bot):

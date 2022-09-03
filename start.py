@@ -7,6 +7,7 @@ from loguru import logger
 from DataBase.DB import DB
 import utils.global_variables as gv
 from utils.create_tabels import create_tables
+from utils.global_variables import EnergyVariables
 
 bot = commands.Bot(command_prefix='>')
 bot.remove_command('help')
@@ -40,6 +41,7 @@ if __name__ == '__main__':
     create_tables(config['file_db'])
 
     gv.DataBaseClass = DB(config['file_db'])
+    gv.EnergyVariablesClass = EnergyVariables('variables.data')
     token = config['token_owl']
 
     if arg.debug or arg.test:

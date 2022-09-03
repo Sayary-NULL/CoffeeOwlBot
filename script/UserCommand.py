@@ -29,7 +29,10 @@ class UserCommand(commands.Cog):
         if len(roll_text) == 1:
             roll_arr = roll_text[0].split(',')
         else:
-            roll_arr = [roll.strip(',') for roll in roll_text]
+            roll_arr = []
+            for roll in roll_text:
+                for item in roll.strip(',').split(','):
+                    roll_arr.append(item)
 
         embed = discord.Embed(color=UserColor)
         random_id = random.randint(0, len(roll_arr)-1)

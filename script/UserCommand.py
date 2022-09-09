@@ -82,6 +82,10 @@ class UserCommand(commands.Cog):
         if user.bot:
             return
 
+        if user.id == OwnerID:
+            await ctx.send(f"{ctx.author.mention}, я не пойду против своего создателя!")
+            user = ctx.author
+
         emd = discord.Embed(color=UserColor)
         emd.add_field(name='**Предупреждение**', value=f'Пользователю: {user.mention} - вынесено предупреждение', inline=False)
         emd.set_image(url='https://media.discordapp.net/attachments/462236317926031370/1003229964843356190/--.jpg?width=975&height=671')

@@ -45,6 +45,7 @@ async def main():
     gv.DataBaseClass = DB(config['file_db'])
     gv.EnergyVariablesClass = EnergyVariables('variables.data')
     token = config['token_owl']
+    log_dir = 'logs'
 
     if arg.debug or arg.test:
         logger.debug('Mode BEBUG on')
@@ -55,9 +56,10 @@ async def main():
         token = config['token_test']
         logger_level = 'DEBUG'
         gv.TestBot = True
+        log_dir = 'test_logs'
 
     logger.remove()
-    logger.add('logs/logs_{time:YY_M_D}.log', format=gv.FormatLog, level=logger_level,
+    logger.add(log_dir + '/logs_{time:YY_M_D}.log', format=gv.FormatLog, level=logger_level,
                rotation='1 MB', compression='zip')
 
     logger.add(sys.stdout, format=gv.FormatLog, level=logger_level)

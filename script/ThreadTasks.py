@@ -80,7 +80,7 @@ class ThreadTasks(commands.Cog):
             emd.add_field(name='**Ссылка на большую версию**', value=f'https://apod.nasa.gov/apod/{href["href"]}',
                           inline=False)
             emd.set_image(url=f'https://apod.nasa.gov/apod/{min_src}')
-            emd.set_footer(text=guild.name, icon_url=guild.icon_url)
+            emd.set_footer(text=guild.name, icon_url=guild.icon.url)
             await channel.send(embed=emd)
 
     @news_nasa.before_loop

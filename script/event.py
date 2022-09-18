@@ -1,5 +1,6 @@
 import discord
 import random
+import utils.global_variables as gv
 from discord.ext import commands
 from loguru import logger
 from utils.global_variables import DataBaseClass
@@ -38,6 +39,8 @@ class Events(commands.Cog):
 
         # не ждем пока дискорд сам, сами говорим серверам что мы умные
         guilds_id = [435485527156981770, 484402073744703498]
+        if gv.TestBot:
+            guilds_id = [435485527156981770]
         for guild_id in guilds_id:
             server = discord.Object(id=guild_id)
             self.bot.tree.copy_global_to(guild=server)

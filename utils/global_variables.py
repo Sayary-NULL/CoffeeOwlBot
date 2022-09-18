@@ -48,7 +48,7 @@ class EnergyVariables:
                     case datetime.date():
                         file.write(f'date;{k};{v.strftime("%Y-%m-%d")}\n')
 
-    def get(self, key, value):
+    def get(self, key, value=None):
         if key in self.variable:
             return self.variable[key]
         else:

@@ -29,7 +29,7 @@ class ThreadTasks(commands.Cog):
 
         date = datetime.now().date()
         time = datetime.now().time()
-        old_date = gv.EnergyVariablesClass['date_post_nasa_news']
+        old_date = gv.EnergyVariablesClass.get('date_post_nasa_news')
 
         logger.debug(f'nasa_news: guild_id - {guild_id}, channel_id - {channel_id}, '
                      f'status - {"on" if gv.ISPostNasaNews else "off" }, '
@@ -46,7 +46,7 @@ class ThreadTasks(commands.Cog):
             return
 
         logger.info('Start task news_nasa - On')
-        gv.EnergyVariablesClass['date_post_nasa_news'] = date
+        gv.EnergyVariablesClass.set('date_post_nasa_news', date)
 
         guild: discord.Guild = self.bot.get_guild(guild_id)
         channel: discord.TextChannel = guild.get_channel(channel_id)

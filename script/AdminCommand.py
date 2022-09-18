@@ -36,7 +36,7 @@ class AdminCommand(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send(f'{ctx.author.mention}, команды в группе не найдены')
 
-    @commands.group(description='команда для публикации новостей')
+    @commands.hybrid_group(description='команда для публикации новостей')
     @logger.catch
     @checks(is_admin, in_channel(is_admin=True, is_command=True))
     async def news(self, ctx: commands.context.Context):

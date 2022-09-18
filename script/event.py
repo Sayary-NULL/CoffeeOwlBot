@@ -35,9 +35,13 @@ class Events(commands.Cog):
     @logger.catch
     async def on_ready(self):
         logger.info('Bot ready!')
-        test_server = discord.Object(id=435485527156981770)
-        self.bot.tree.copy_global_to(guild=test_server)
-        await self.bot.tree.sync(guild=test_server)
+
+        # не ждем пока дискорд сам, сами говорим серверам что мы умные
+        guilds_id = [435485527156981770, 484402073744703498]
+        for guild_id in guilds_id:
+            server = discord.Object(id=guild_id)
+            self.bot.tree.copy_global_to(guild=server)
+            await self.bot.tree.sync(guild=server)
 
     @commands.Cog.listener()
     @logger.catch

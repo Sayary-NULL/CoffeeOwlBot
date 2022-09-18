@@ -9,6 +9,7 @@ from utils.utils_methods import generate_parameter_from_trigger
 class Events(commands.Cog):
     def __init__(self, bot: discord.Client):
         self.bot = bot
+        self.del_emoji = discord.PartialEmoji(name='💢')
 
     @commands.Cog.listener()
     @logger.catch
@@ -55,6 +56,20 @@ class Events(commands.Cog):
                      f'error message: {exception}')
         await ctx.send(f'{ctx.author.mention}, произошла ошибка: {exception}')
 
+    @commands.Cog.listener()
+    @logger.catch
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
+        guild: discord.Guild = self.bot.get_guild(payload.guild_id)
+        user: discord.Member = guild.get_member(payload.user_id)
+
+        if user.bot:
+            return
+
+        channel: discord.TextChannel = guild.get_channel(payload.channel_id)
+        message: discord.Message = await channel.fetch_message(payload.message_id)
+
+        if user.guild_permissions.administrator and payload.emoji == self.del_emoji:
+            await message.delete()
 
 
 async def setup(bot):

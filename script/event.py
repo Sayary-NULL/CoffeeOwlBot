@@ -34,6 +34,9 @@ class Events(commands.Cog):
     @logger.catch
     async def on_ready(self):
         logger.info('Bot ready!')
+        test_server = discord.Object(id=435485527156981770)
+        self.bot.tree.copy_global_to(guild=test_server)
+        await self.bot.tree.sync(guild=test_server)
 
     @commands.Cog.listener()
     @logger.catch
@@ -53,5 +56,6 @@ class Events(commands.Cog):
         await ctx.send(f'{ctx.author.mention}, произошла ошибка: {exception}')
 
 
-def setup(bot):
-    bot.add_cog(Events(bot))
+
+async def setup(bot):
+    await bot.add_cog(Events(bot))

@@ -14,7 +14,7 @@ def user_is_owner(user: discord.Member):
     return user.id == global_variables.OwnerID
 
 
-def generate_parameter_from_trigger(ctx: discord.message.Message):
+def generate_parameter_from_trigger(ctx: discord.message.Message) -> dict:
     return {
         "{time}": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         "{user_name}": ctx.author.name,

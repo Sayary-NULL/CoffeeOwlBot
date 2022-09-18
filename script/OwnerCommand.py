@@ -1,81 +1,78 @@
+import os
 import discord
 from discord.ext import commands
 import utils.global_variables as gv
 from loguru import logger
-from decorators.decor_command import add_description
 from decorators.chekers import checks, only_false, is_owner, in_channel
+from decorators.decor_command import write_log
+
+
+class Dropdown(discord.ui.Select):
+    def __init__(self, files: list):
+
+        options = []
+
+        for file in files:
+            options.append(discord.SelectOption(label=file, emoji='📝'))
+
+        super().__init__(placeholder='Выбирете файл для отправки', min_values=1, max_values=1, options=options)
+
+    async def callback(self, interaction: discord.Interaction):
+        await interaction.response.send_message(f'Отправлен файл {self.values[0]}',
+                                                file=discord.File(f'./logs/{self.values[0]}'))
+
+
+class DropdownView(discord.ui.View):
+    def __init__(self, files: list):
+        super().__init__()
+
+        # Adds the dropdown to our view object.
+        self.add_item(Dropdown(files))
 
 
 class OwnerCommand(commands.Cog):
     def __init__(self, bot: discord.Client):
         self.bot = bot
-        self.url = 'https://media.discordapp.net/attachments/462236317926031370/464447806887690240/news26052017.jpg' \
-                   '?width=1193&height=671 '
-        self.title = None
-        self.desc = None
+        self.id_log = None
 
-    @commands.command()
+    @commands.command(description='Команда запускающая тесты для бота')
+    @write_log('test')
     @logger.catch
     @checks(is_owner, in_channel(is_admin=True))
     async def test(self, ctx: commands.context.Context):
         await ctx.send('Ok')
 
     @commands.command()
+    @write_log('sleep')
     @logger.catch
     @checks(is_owner, in_channel(is_base=True))
     async def sleep(self, ctx: commands.context.Context):
         await ctx.send('Доугукался, пора спать)')
         await self.bot.close()
 
-    @add_description('команда для публикации новостей')
-    @commands.group()
+    @commands.command()
+    @write_log('debug')
     @logger.catch
-    @checks(is_owner, in_channel(is_admin=True))
-    async def news(self, ctx: commands.context.Context):
-        if ctx.invoked_subcommand is None:
-            await ctx.send(f'{ctx.author.mention}, команды в группе не найдены')
+    @checks(is_owner, in_channel(is_base=True))
+    async def debug(self, ctx: commands.context.Context, mode:bool = False):
+        if mode:
+            self.id_log = logger.add('logs/d_logs_{time:YY_M_D}.log', format=gv.FormatLog, level='DEBUG',
+                                     rotation='1 MB', compression='zip')
+            await ctx.send(f'{ctx.author.mention}, режим дебага включен')
+        else:
+            if self.id_log is not None:
+                logger.remove(self.id_log)
+                self.id_log = None
+                await ctx.send(f'{ctx.author.mention}, режим дебага выключен')
 
-    @news.command()
+    @commands.command()
+    @write_log('logs')
     @logger.catch
-    @checks(is_owner, in_channel(is_admin=True), err_message=False)
-    async def desc(self, ctx: commands.context.Context, desc: str):
-        self.desc = desc
-        await ctx.send('Описание установлено')
-
-    @news.command()
-    @logger.catch
-    @checks(is_owner, in_channel(is_admin=True), err_message=False)
-    async def title(self, ctx: commands.context.Context, title: str):
-        self.title = title
-        await ctx.send('Заголовок установлен')
-
-    @news.command()
-    @logger.catch
-    @checks(is_owner, in_channel(is_admin=True), err_message=False)
-    async def image(self, ctx: commands.context.Context, url: str):
-        self.url = url
-        await ctx.send('Изображение установлено')
-
-    @news.command()
-    @logger.catch
-    @checks(is_owner, in_channel(is_admin=True), err_message=False)
-    async def post(self, ctx: commands.context.Context, channel: discord.TextChannel = None):
-        if self.desc is None:
-            return
-
-        if channel is None:
-            channel = ctx.channel
-
-        try:
-            await channel.send(self.url)
-            if self.title is not None:
-                await channel.send(self.title)
-            await channel.send(self.desc)
-            await channel.send(f'Автор: {ctx.author.mention}')
-        except Exception as e:
-            await ctx.send("Ошибка отправки сообщения.")
-            logger.error(e)
+    @checks(is_owner, in_channel(is_base=True))
+    async def logs(self, ctx: commands.context.Context):
+        view = DropdownView(os.listdir('./logs'))
+        await ctx.send('Send view', view=view)
 
 
-def setup(bot):
-    bot.add_cog(OwnerCommand(bot))
+async def setup(bot):
+    await bot.add_cog(OwnerCommand(bot))

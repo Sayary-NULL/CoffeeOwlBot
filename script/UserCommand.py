@@ -1,10 +1,12 @@
+import re
 import json
 import discord
 import random
 from script import AdminCommand, OwnerCommand
 from loguru import logger
+from discord import app_commands
 from discord.ext import commands
-from decorators.decor_command import in_channel, add_description
+from decorators.decor_command import in_channel, write_log
 from utils.utils_methods import user_is_admin, user_is_owner, get_help_from_class, get_funcs_on_name_or_aliases, \
     get_all_group, get_param_on_func
 from utils.global_variables import UserColor, OwnerID
@@ -14,25 +16,19 @@ class UserCommand(commands.Cog):
     def __init__(self, bot: discord.Client):
         self.bot = bot
 
-    @add_description('Привет 0/')
-    @commands.command(aliases=['привет'])
+    @commands.hybrid_command(aliases=['привет'], description='Привет!')
+    @write_log('hello')
     @logger.catch
     @in_channel(is_base=True)
     async def hello(self, ctx: commands.context.Context):
         await ctx.send(f'{ctx.author.mention}, hello!')
 
-    @add_description('Случайно выбирает элемент, разделитель = ","')
-    @commands.command(aliases=['случай', 'random'])
+    @commands.hybrid_command(aliases=['случай', 'random'], description='Случайно выбирает элемент, разделитель = ","')
+    @write_log('roll')
     @logger.catch
     @in_channel(is_base=True, is_command=True)
-    async def roll(self, ctx: commands.context.Context, *roll_text: str):
-        if len(roll_text) == 1:
-            roll_arr = roll_text[0].split(',')
-        else:
-            roll_arr = []
-            for roll in roll_text:
-                for item in roll.strip(',').split(','):
-                    roll_arr.append(item)
+    async def roll(self, ctx: commands.context.Context, *, roll_text: str):
+        roll_arr = re.split(r"[,; ]", roll_text)
 
         embed = discord.Embed(color=UserColor)
         random_id = random.randint(0, len(roll_arr)-1)
@@ -51,11 +47,15 @@ class UserCommand(commands.Cog):
         )
         await ctx.send(embed=embed)
 
-    @add_description('Шуточная команда "бан"')
-    @commands.command(aliases=['бан'])
+    @commands.hybrid_command(aliases=['бан'], description='Шуточная команда "бан"')
+    @app_commands.describe(
+        user='Провинившийся пользователь',
+        text='Причина бана'
+    )
+    @write_log('ban')
     @logger.catch
     @in_channel(is_base=True, is_command=True)
-    async def ban(self, ctx: discord.ext.commands.context.Context, user: discord.Member, text: str = None):
+    async def ban(self, ctx: discord.ext.commands.context.Context, user: discord.Member, *, text: str = None):
         if user.bot:
             return
 
@@ -71,11 +71,11 @@ class UserCommand(commands.Cog):
         emd.add_field(name='**Бан**', value=f'Пользователь: {user.mention} - забанен', inline=False)
         emd.add_field(name='**Причина**', value=f'{text if text is not None else "Не указанно"}', inline=False)
         emd.set_image(url=url_image)
-        emd.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon_url)
+        emd.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon.url)
         await ctx.send(embed=emd)
 
-    @add_description('Шуточная команда "warn"')
-    @commands.command()
+    @commands.hybrid_command(description='Шуточная команда "warn"')
+    @write_log('warn')
     @logger.catch
     @in_channel(is_base=True, is_command=True)
     async def warn(self, ctx: discord.ext.commands.context.Context, user: discord.Member):
@@ -92,8 +92,8 @@ class UserCommand(commands.Cog):
         emd.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon_url)
         await ctx.send(embed=emd)
 
-    @add_description('Показывает текущую версию бота')
-    @commands.command(aliases=['версия'])
+    @commands.hybrid_command(aliases=['версия'], description='Показывает текущую версию бота')
+    @write_log('ver')
     @logger.catch
     @in_channel(is_command=True)
     async def ver(self, ctx: commands.context.Context):
@@ -101,8 +101,8 @@ class UserCommand(commands.Cog):
             js = json.load(f)
         await ctx.send(f'версия: {js["ver"]}')
 
-    @add_description('>help для большей подробности')
-    @commands.command()
+    @commands.hybrid_command(description='>help для большей подробности')
+    @write_log('help')
     @logger.catch
     @in_channel(is_command=True)
     async def help(self, ctx: commands.context.Context, func_name: str = None):
@@ -199,5 +199,5 @@ class UserCommand(commands.Cog):
             await ctx.send(embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(UserCommand(bot))
+async def setup(bot):
+    await bot.add_cog(UserCommand(bot))

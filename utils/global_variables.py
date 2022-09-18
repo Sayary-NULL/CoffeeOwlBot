@@ -11,7 +11,7 @@ OwnerColor = discord.colour.Colour.green()
 TestBot: bool = False
 ISDebug = False
 ISPostNasaNews = False
-
+FormatLog = '[{time:YY.M.D HH:mm:ss}] | {level}\t| {name}:{function}:{line} - {message}'
 
 class EnergyVariables:
     def __init__(self, file_name):

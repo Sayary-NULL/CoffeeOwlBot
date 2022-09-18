@@ -42,13 +42,6 @@ def is_owner(fn):
     return decor
 
 
-def add_description(description: str = None):
-    def decorator(fn):
-        fn.description = description
-        return fn
-    return decorator
-
-
 def write_log(func_name: str):
     def decor(fn):
         @functools.wraps(fn)
@@ -62,5 +55,12 @@ def write_log(func_name: str):
         return wrapper
 
     return decor
+
+
+def func_off(func):
+    @functools.wraps(func)
+    async def wrapper(self, ctx: discord.ext.commands.context.Context, *args, **kwargs):
+        await ctx.send(f'{ctx.author.mention}, функция выключена')
+    return wrapper
 
 

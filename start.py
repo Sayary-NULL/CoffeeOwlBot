@@ -1,15 +1,20 @@
-import json
-import os
-import asyncio
-from discord.ext import commands
 import argparse
-from loguru import logger
+import os
+import sys
 from DataBase.DB import DB
 import utils.global_variables as gv
-from utils.create_tabels import create_tables
 from utils.global_variables import EnergyVariables
+import discord
+import json
+import asyncio
+from discord.ext import commands
+from loguru import logger
 
-bot = commands.Bot(command_prefix='>')
+intents = discord.Intents.default()
+intents.members = True
+intents.message_content = True
+
+bot = commands.Bot(command_prefix='>', intents=intents)
 bot.remove_command('help')
 
 
@@ -18,27 +23,24 @@ async def reload(ctx: commands.context.Context):
     if ctx.author.id != gv.OwnerID:
         return
     logger.info('Start reload functions')
-    for item in os.listdir(path):
+    for item in os.listdir('./script'):
         if not item.startswith('_'):
             logger.debug(item)
             await bot.reload_extension(f'script.{item[:-3]}')
     logger.info('End reload functions')
     await ctx.send(f'{ctx.author.mention}, перезагрузка модулей завершена')
 
-if __name__ == '__main__':
+
+async def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--test', action='store_const', const=True)
     parser.add_argument('-d', '--debug', action='store_const', const=True)
     arg = parser.parse_args()
 
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'script')
+    logger_level = 'INFO'
 
     with open('config.json', 'r', encoding='utf-8') as file:
         config = json.load(file)
-
-    logger_level = 'INFO'
-
-    create_tables(config['file_db'])
 
     gv.DataBaseClass = DB(config['file_db'])
     gv.EnergyVariablesClass = EnergyVariables('variables.data')
@@ -54,23 +56,30 @@ if __name__ == '__main__':
         logger_level = 'DEBUG'
         gv.TestBot = True
 
-    logger.add('logs/logs_{time:YY_M_D}.log', format='[{time:YY.M.D HH:m:s}] - {level}: {message}', level=logger_level,
+    logger.remove()
+    logger.add('logs/logs_{time:YY_M_D}.log', format=gv.FormatLog, level=logger_level,
                rotation='1 MB', compression='zip')
 
-    logger.info('Start load functions')
-    for item in os.listdir(path):
-        if not item.startswith('_'):
-            logger.debug(item)
-            bot.load_extension(f'script.{item[:-3]}')
-    logger.info('End load functions')
+    logger.add(sys.stdout, format=gv.FormatLog, level=logger_level)
 
     with open('version.json', 'r') as f:
         ver = json.load(f)['ver']
 
     logger.info(f'Запуск бота версии: {ver}')
 
-    ioloop = asyncio.get_event_loop()
-    ioloop.run_until_complete(asyncio.wait([ioloop.create_task(bot.start(token))]))
-    ioloop.close()
+    async with bot:
+        logger.info('Start load functions')
+        for item in os.listdir('./script'):
+            if item.startswith('_'):
+                continue
+            logger.debug(f'загрузка модуля: {item[:-3]}')
+            await bot.load_extension(f'script.{item[:-3]}')
+        logger.info('End load functions')
+
+        await bot.start(token)
 
     logger.info('Бот выключен')
+
+
+if __name__ == '__main__':
+    asyncio.run(main())

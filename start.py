@@ -59,8 +59,7 @@ async def main():
         log_dir = 'test_logs'
 
     logger.remove()
-    logger.add(log_dir + '/logs_{time:YY_M_D}.log', format=gv.FormatLog, level=logger_level,
-               rotation='1 MB', compression='zip')
+    logger.add(log_dir + '/logs_{time:YY_M_D}.log', format=gv.FormatLog, level=logger_level)
 
     logger.add(sys.stdout, format=gv.FormatLog, level=logger_level)
 

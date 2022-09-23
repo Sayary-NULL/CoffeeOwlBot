@@ -54,10 +54,9 @@ class OwnerCommand(commands.Cog):
     @write_log('debug')
     @logger.catch
     @checks(is_owner, in_channel(is_base=True))
-    async def debug(self, ctx: commands.context.Context, mode:bool = False):
+    async def debug(self, ctx: commands.context.Context, mode: bool = False):
         if mode:
-            self.id_log = logger.add('logs/d_logs_{time:YY_M_D}.log', format=gv.FormatLog, level='DEBUG',
-                                     rotation='1 MB', compression='zip')
+            self.id_log = logger.add('logs/d_logs_{time:YY_M_D}.log', level='DEBUG')
             await ctx.send(f'{ctx.author.mention}, режим дебага включен')
         else:
             if self.id_log is not None:

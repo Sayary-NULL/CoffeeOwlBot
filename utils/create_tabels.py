@@ -28,3 +28,20 @@ def create_tables(file_db):
     text_response str not null
 );""")
     con.commit()
+
+    cur.execute("""create table if not exists "variables"
+    (
+        id integer constraint variables_pk primary key autoincrement,
+        variable_name str not null,
+        data_value not null
+    )
+    """)
+    con.commit()
+
+    cur.execute("""create table if not exists warn
+(
+    user_id     bigint  not null,
+    count_warns float not null
+);
+""")
+    con.commit()

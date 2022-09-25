@@ -3,12 +3,12 @@ import os
 import sys
 from DataBase.DB import DB
 import utils.global_variables as gv
-from utils.global_variables import EnergyVariables
 import discord
 import json
 import asyncio
 from discord.ext import commands
 from loguru import logger
+from utils.create_tabels import create_tables
 
 intents = discord.Intents.default()
 intents.members = True
@@ -55,8 +55,8 @@ def main():
     with open('config.json', 'r', encoding='utf-8') as file:
         config = json.load(file)
 
+    create_tables(config['file_db'])
     gv.DataBaseClass = DB(config['file_db'])
-    gv.EnergyVariablesClass = EnergyVariables('variables.data')
     token = config['token_owl']
 
     if arg.debug or arg.test:

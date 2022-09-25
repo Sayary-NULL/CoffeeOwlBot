@@ -19,6 +19,7 @@ class ThreadTasks(commands.Cog):
         self.news_nasa.cancel()
 
     @tasks.loop(minutes=1.0)
+    @logger.catch
     async def news_nasa(self):
         guild_id = 484402073744703498
         channel_id = 687285704849489935
@@ -29,7 +30,7 @@ class ThreadTasks(commands.Cog):
 
         date = datetime.now().date()
         time = datetime.now().time()
-        old_date = gv.EnergyVariablesClass.get('date_post_nasa_news')
+        old_date = gv.DataBaseClass.get_value('date_post_nasa_news', None)
 
         logger.debug(f'nasa_news: guild_id - {guild_id}, channel_id - {channel_id}, '
                      f'status - {"on" if gv.ISPostNasaNews else "off" }, '
@@ -46,7 +47,7 @@ class ThreadTasks(commands.Cog):
             return
 
         logger.info('Start task news_nasa - On')
-        gv.EnergyVariablesClass.set('date_post_nasa_news', date)
+        gv.DataBaseClass.set_value('date_post_nasa_news', type='date', value=date)
 
         guild: discord.Guild = self.bot.get_guild(guild_id)
         channel: discord.TextChannel = guild.get_channel(channel_id)

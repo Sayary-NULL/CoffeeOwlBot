@@ -1,5 +1,7 @@
+import datetime
 import sqlite3 as sl
 from loguru import logger
+import json
 
 
 class DB:
@@ -64,3 +66,41 @@ class DB:
         con, cur = self.get_open_cursor()
         cur.execute("""delete from "trigger" where trigger_id = ?""", (id_trigger, ))
         con.commit()
+
+    def get_value(self, key, value=None):
+        con, cur = self.get_open_cursor()
+        cur.execute("""select data_value from variables where variable_name = ?""", (key, ))
+
+        if (rez := cur.fetchone()) is None:
+            if value is not None:
+                cur.execute("""insert into variables (variable_name, data_value) VALUES (?, ?)""",
+                            (key, "{'type':'{type}', 'data':'{data}'}".format(type=type(value), data=value)))
+                con.commit()
+            return value
+        else:
+            return self._str_to_data(rez[0])
+
+    def set_value(self, key, type, value):
+        con, cur = self.get_open_cursor()
+        cur.execute("""update variables set data_value = "{'type':'{type}', 'data':'{data}'" where key = {key}"""
+                    .format(key=key, data=value, type=type))
+        con.commit()
+
+    def get_warns(self, user_id: int):
+        con, cur = self.get_open_cursor()
+        cur.execute("""select count_warns from warn where user_id = {id}""".format(id=user_id))
+        return cur.fetchone()
+
+    def set_warns(self, user_id: int, count: int):
+        con, cur = self.get_open_cursor()
+        if self.get_warns(user_id) is None:
+            cur.execute("""insert into warn values (?, ?)""", (user_id, count))
+        else:
+            cur.execute("""update warn set count_warns = ? where user_id = ?""", (count, user_id))
+        con.commit()
+
+    def _str_to_data(self, data: str):
+        data = json.loads(data)
+        match data['type']:
+            case 'date':
+                return datetime.datetime.strptime(data['data'], '%Y-%m-%d')

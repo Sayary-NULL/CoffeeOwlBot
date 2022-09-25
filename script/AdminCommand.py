@@ -170,7 +170,7 @@ class AdminCommand(commands.Cog):
     @admin.command(description='Реальный варн пользователям')
     @write_log('admin warn')
     @logger.catch
-    @checks(is_admin, in_channel(is_admin=True, is_command=True))
+    @checks(is_admin, in_channel(is_base=True))
     async def warn(self, ctx: commands.context.Context, user: discord.Member):
         if user.bot:
             await ctx.send(f'{ctx.author.mention}, с ботами не работаю')

@@ -1,3 +1,5 @@
+import datetime
+
 import discord
 from loguru import logger
 from discord import app_commands
@@ -169,8 +171,45 @@ class AdminCommand(commands.Cog):
     @write_log('admin warn')
     @logger.catch
     @checks(is_admin, in_channel(is_admin=True, is_command=True))
-    async def warn(self, ctx: commands.context.Context, user: discord.Member, reason: str = None):
-        pass
+    async def warn(self, ctx: commands.context.Context, user: discord.Member):
+        if user.bot:
+            await ctx.send(f'{ctx.author.mention}, с ботами не работаю')
+            return
+
+        count_warns = gv.DataBaseClass.get_warns(user.id)
+
+        if count_warns is None:
+            count_warns = 0
+
+        count_warns = count_warns[0]
+
+        if count_warns > 10:
+            count_warns += int(count_warns / 5)*0.25
+
+        count_warns += 1
+
+        match round(count_warns) % 5:
+            case 1:
+                await ctx.send(f'{ctx.author.mention}, к {user.mention} применен первый уровень наказания')
+                await user.timeout(datetime.timedelta(minutes=5))
+            case 2:
+                await ctx.send(f'{ctx.author.mention}, к {user.mention} применен второй уровень наказания')
+                await user.timeout(datetime.timedelta(days=1))
+            case 3:
+                await ctx.send(f'{ctx.author.mention}, к {user.mention} применен третий уровень наказания')
+                await user.timeout(datetime.timedelta(weeks=1))
+            case 4:
+                await ctx.send(f'{ctx.author.mention}, к {user.mention} применен четвертый уровень наказания')
+                await user.timeout(datetime.timedelta(weeks=1))
+            case 5:
+                await ctx.send(f'{ctx.author.mention}, к {user.mention} применен пятый уровень наказания')
+                await user.timeout(datetime.timedelta(weeks=2))
+
+        gv.DataBaseClass.set_warns(user.id, count_warns)
+
+
+
+
 
     @admin.command(description='Переключает показ ежедневных постов NASA')
     @write_log('set nasa_news')

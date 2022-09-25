@@ -180,8 +180,10 @@ class AdminCommand(commands.Cog):
 
         if count_warns is None:
             count_warns = 0
+        else:
+            count_warns = count_warns[0]
 
-        count_warns = count_warns[0]
+        count_warns = count_warns
 
         if count_warns > 10:
             count_warns += int(count_warns / 5)*0.25

@@ -72,6 +72,37 @@ class OwnerCommand(commands.Cog):
         view = DropdownView(os.listdir('./logs'))
         await ctx.send('Send view', view=view)
 
+    @commands.command()
+    @write_log('sql')
+    @logger.catch
+    @checks(is_owner, in_channel(is_admin=True, is_command=True))
+    async def sql(self, ctx: commands.context.Context, *, sql_command: str):
+        if sql_command == '.tables':
+            sql_command = 'select tbl_name from sqlite_master'
+        status, result, column_name = gv.DataBaseClass.execute(sql_command)
+        text = ''
+        if status == 'ERROR':
+            text = str(result)
+        elif status == 'OK':
+            text = '```'
+            result = list(map(lambda x: list(map(str, x)), result))
+            len_column = [len(column) for column in column_name]
+            for row in result:
+                for i, cell in enumerate(row):
+                    len_column[i] = max(len_column[i], len(cell))
+
+            text += '| ' + ' | '.join([x + ' '*(len_column[i] - len(x)) for i, x in enumerate(column_name)]) + ' |\n'
+            text += '-'*(len(text)-4) + '\n'
+            for row in result:
+                for i, cell in enumerate(row):
+                    row[i] = cell + ' '*(len_column[i] - len(cell))
+                text += '| ' + ' | '.join(row) + ' |\n'
+            text += '```'
+        else:
+            text = 'result is None'
+
+        await ctx.message.reply(text)
+
 
 async def setup(bot):
     await bot.add_cog(OwnerCommand(bot))

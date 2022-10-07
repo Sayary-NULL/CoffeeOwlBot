@@ -19,6 +19,26 @@ class DB:
         except sl.OperationalError:
             return False
 
+    def execute(self, sql_query):
+        con, cur = self.get_open_cursor()
+        result = ('OK', 'data', 'column_name')
+        try:
+            cur.execute(sql_query)
+        except Exception as e:
+            return 'ERROR', e, ''
+
+        is_command = False
+        for command in ['DELETE', 'INSERT', 'UPDATE']:
+            if command in sql_query or command.lower() in sql_query:
+                con.commit()
+                is_command = True
+                break
+
+        if not is_command:
+            return 'OK', cur.fetchall(), [str(x[0]) for x in cur.description or []]
+        else:
+            return 'COMMIT', '', ''
+
     def get_open_cursor(self):
         con = sl.connect(self.str_connect, uri=True)
         return con, con.cursor()

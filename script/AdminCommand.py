@@ -206,9 +206,13 @@ class AdminCommand(commands.Cog):
 
         gv.DataBaseClass.set_warns(user.id, count_warns)
 
-
-
-
+    @admin.command(description='Дает команду боту для публекации Nasa новостей')
+    @write_log('postnasanews')
+    @logger.catch
+    @checks(is_admin, in_channel(is_base=True))
+    async def postnasanews(self, ctx: commands.context.Context):
+        gv.NowPostNasaNews = True
+        await ctx.send(f'{ctx.author.mention}, нововсти скоро будут опублекованны')
 
     @admin.command(description='Переключает показ ежедневных постов NASA')
     @write_log('set nasa_news')

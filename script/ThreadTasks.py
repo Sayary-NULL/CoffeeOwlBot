@@ -1,4 +1,5 @@
 import re
+import pytz
 import discord
 import requests
 import utils.global_variables as gv
@@ -29,7 +30,7 @@ class ThreadTasks(commands.Cog):
             channel_id = 531541696995917844
 
         date = datetime.now().date()
-        time = datetime.now().time()
+        time = datetime.now(pytz.timezone('Europe/Moscow')).time()
         old_date = gv.DataBaseClass.get_value('date_post_nasa_news', None)
 
         logger.debug(f'nasa_news: guild_id - {guild_id}, channel_id - {channel_id}, '
@@ -42,12 +43,15 @@ class ThreadTasks(commands.Cog):
             logger.debug('NASA news - Off')
             return
 
-        if old_date is not None and (date <= old_date or time.hour != 8):
+        if not gv.NowPostNasaNews and old_date is not None and (date <= old_date or time.hour != 8):
             logger.debug('Start task news_nasa - Off')
             return
 
+        if gv.NowPostNasaNews:
+            gv.NowPostNasaNews = False
+
         logger.info('Start task news_nasa - On')
-        gv.DataBaseClass.set_value('date_post_nasa_news', type='date', value=date)
+        gv.DataBaseClass.set_value('date_post_nasa_news', stype='date', value=date)
 
         guild: discord.Guild = self.bot.get_guild(guild_id)
         channel: discord.TextChannel = guild.get_channel(channel_id)

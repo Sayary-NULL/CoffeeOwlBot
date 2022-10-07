@@ -9,3 +9,4 @@ OwnerColor = discord.colour.Colour.green()
 TestBot: bool = False
 ISDebug = False
 ISPostNasaNews = False
+NowPostNasaNews = False

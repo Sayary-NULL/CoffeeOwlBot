@@ -74,16 +74,16 @@ class DB:
         if (rez := cur.fetchone()) is None:
             if value is not None:
                 cur.execute("""insert into variables (variable_name, data_value) VALUES (?, ?)""",
-                            (key, "{'type':'{type}', 'data':'{data}'}".format(type=type(value), data=value)))
+                            (key, "{\"type\":\"{type}\", \"data\":\"{data}\"}".format(type=type(value), data=value)))
                 con.commit()
             return value
         else:
             return self._str_to_data(rez[0])
 
-    def set_value(self, key, type, value):
+    def set_value(self, key, stype, value):
         con, cur = self.get_open_cursor()
-        cur.execute("""update variables set data_value = "{'type':'{type}', 'data':'{data}'" where key = {key}"""
-                    .format(key=key, data=value, type=type))
+        data_value = "{" + """"type":"{type}", "data":"{data}\"""".format(type=stype, data=value) + "}"
+        cur.execute("""update variables set data_value = ? where variable_name = ?""", (data_value, key))
         con.commit()
 
     def get_warns(self, user_id: int):
@@ -103,4 +103,4 @@ class DB:
         data = json.loads(data)
         match data['type']:
             case 'date':
-                return datetime.datetime.strptime(data['data'], '%Y-%m-%d')
+                return datetime.datetime.strptime(data['data'], '%Y-%m-%d').date()

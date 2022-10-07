@@ -73,8 +73,11 @@ class DB:
 
         if (rez := cur.fetchone()) is None:
             if value is not None:
+                stype = str(type(value))
+                stype = stype[stype.find('\'')+1: stype.rfind('\'')]
+                data_value = "{" + """"type":"{type}", "data":"{data}\"""".format(type=stype, data=value) + "}"
                 cur.execute("""insert into variables (variable_name, data_value) VALUES (?, ?)""",
-                            (key, "{\"type\":\"{type}\", \"data\":\"{data}\"}".format(type=type(value), data=value)))
+                            (key, data_value))
                 con.commit()
             return value
         else:

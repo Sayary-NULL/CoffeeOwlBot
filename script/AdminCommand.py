@@ -270,7 +270,6 @@ class AdminCommand(commands.Cog):
     @admin.command(description='Публикует сообщение с информацией об получении роли')
     @write_log('post role')
     @logger.catch
-    @checks(is_admin, in_channel(is_admin=True, is_command=True), err_message=False)
     async def post_role(self, ctx: commands.context.Context):
 
         text = """• <@&1076816359272501268> - 🟡 
@@ -284,8 +283,11 @@ class AdminCommand(commands.Cog):
 
         message_id = gv.options.get('id_message_on_add_reaction')
         if message_id:
-            message = ctx.channel.get_partial_message(message_id)
-            await message.delete()
+            try:
+                message = ctx.channel.get_partial_message(message_id)
+                await message.delete()
+            except:
+                pass
 
         emd = discord.Embed(color=gv.AdminColor)
         emd.add_field(name='**Цветные роли**', value=f'Здесь можно получить цветные роли нажав на реакции', inline=False)

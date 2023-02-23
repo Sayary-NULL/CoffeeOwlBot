@@ -283,21 +283,15 @@ class AdminCommand(commands.Cog):
 • <@&1076818678194122792> - ⚫"""
 
         message_id = gv.options.get('id_message_on_add_reaction')
-        if gv.ISDebug:
-            channel_id = 444152623319482378
-        else:
-            channel_id = 869969425208586241
-        channel = ctx.guild.get_channel(channel_id)
-
         if message_id:
-            message = channel.get_partial_message(message_id)
+            message = ctx.channel.get_partial_message(message_id)
             await message.delete()
 
         emd = discord.Embed(color=gv.AdminColor)
         emd.add_field(name='**Цветные роли**', value=f'Здесь можно получить цветные роли нажав на реакции', inline=False)
         emd.add_field(name='**Список ролей**', value=f'{text}', inline=False)
         emd.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon.url)
-        message = await channel.send(embed=emd)
+        message = await ctx.channel.send(embed=emd)
         color_roles = [
             (discord.PartialEmoji(name='🟡'), 474531526688899072),
             (discord.PartialEmoji(name='🟠'), 474531526688899072),

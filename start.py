@@ -58,7 +58,7 @@ def main():
     create_tables(config['file_db'])
     gv.DataBaseClass = DB(config['file_db'])
     token = config['token_owl']
-    gv.options = config['options']
+    gv.options = config.get('options', dict())
 
     if arg.debug or arg.test:
         logger_level = 'DEBUG'

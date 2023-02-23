@@ -12,6 +12,17 @@ class Events(commands.Cog):
         self.bot = bot
         self.del_emoji = discord.PartialEmoji(name='💢')
 
+        self.color_roles = [
+            (discord.PartialEmoji(name='🟡'), 1076816359272501268),
+            (discord.PartialEmoji(name='🟠'), 1076816413127344159),
+            (discord.PartialEmoji(name='🔴'), 1076816463471587458),
+            (discord.PartialEmoji(name='🔵'), 1076816504701587456),
+            (discord.PartialEmoji(name='🟢'), 1076816607642390580),
+            (discord.PartialEmoji(name='🟩'), 1076816571034513419),
+            (discord.PartialEmoji(name='🔺'), 1076816654320799784),
+            (discord.PartialEmoji(name='⚫'), 1076818678194122792)
+        ]
+
     @commands.Cog.listener()
     @logger.catch
     async def on_message(self, message: discord.message.Message):
@@ -77,6 +88,33 @@ class Events(commands.Cog):
 
         if user.guild_permissions.administrator and payload.emoji == self.del_emoji:
             await message.delete()
+
+        if gv.options:
+            save_message_id = gv.options.get('id_message_on_add_reaction', -1)
+            if payload.message_id == save_message_id:
+                for emoji, role_id in self.color_roles:
+                    if payload.emoji == emoji:
+                        role = guild.get_role(role_id)
+                        await user.add_roles(role)
+                        break
+
+    @commands.Cog.listener()
+    @logger.catch
+    async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
+        guild: discord.Guild = self.bot.get_guild(payload.guild_id)
+        user: discord.Member = guild.get_member(payload.user_id)
+
+        if user.bot:
+            return
+
+        if gv.options:
+            save_message_id = gv.options.get('id_message_on_add_reaction', -1)
+            if payload.message_id == save_message_id:
+                for emoji, role_id in self.color_roles:
+                    if payload.emoji == emoji:
+                        role = guild.get_role(role_id)
+                        await user.remove_roles(role)
+                        break
 
 
 async def setup(bot):

@@ -10,3 +10,4 @@ TestBot: bool = False
 ISDebug = False
 ISPostNasaNews = False
 NowPostNasaNews = False
+options: dict = dict()

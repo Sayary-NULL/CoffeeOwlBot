@@ -1,4 +1,5 @@
 import datetime
+import json
 
 import discord
 from loguru import logger
@@ -265,6 +266,60 @@ class AdminCommand(commands.Cog):
         except Exception as e:
             await ctx.send("Ошибка отправки сообщения.")
             logger.error(e)
+
+    @admin.command(description='Публикует сообщение с информацией об получении роли')
+    @write_log('post role')
+    @logger.catch
+    @checks(is_admin, in_channel(is_admin=True, is_command=True), err_message=False)
+    async def post_role(self, ctx: commands.context.Context):
+
+        text = """• <@&1076816359272501268> - 🟡 
+• <@&1076816413127344159> - 🟠 
+• <@&1076816463471587458> - 🔴 
+• <@&1076816504701587456> - 🔵 
+• <@&1076816607642390580> - 🟢 
+• <@&1076816571034513419> - 🟩 
+• <@&1076816654320799784> - 🔺 
+• <@&1076818678194122792> - ⚫"""
+
+        message_id = gv.options.get('id_message_on_add_reaction')
+        if gv.ISDebug:
+            channel_id = 444152623319482378
+        else:
+            channel_id = 869969425208586241
+        channel = ctx.guild.get_channel(channel_id)
+
+        if message_id:
+            message = channel.get_partial_message(message_id)
+            await message.delete()
+
+        emd = discord.Embed(color=gv.AdminColor)
+        emd.add_field(name='**Цветные роли**', value=f'Здесь можно получить цветные роли нажав на реакции', inline=False)
+        emd.add_field(name='**Список ролей**', value=f'{text}', inline=False)
+        emd.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon.url)
+        message = await channel.send(embed=emd)
+        color_roles = [
+            (discord.PartialEmoji(name='🟡'), 474531526688899072),
+            (discord.PartialEmoji(name='🟠'), 474531526688899072),
+            (discord.PartialEmoji(name='🔴'), 474531526688899072),
+            (discord.PartialEmoji(name='🔵'), 474531526688899072),
+            (discord.PartialEmoji(name='🟢'), 474531526688899072),
+            (discord.PartialEmoji(name='🟩'), 474531526688899072),
+            (discord.PartialEmoji(name='🔺'), 474531526688899072),
+            (discord.PartialEmoji(name='⚫'), 474531526688899072)
+        ]
+        for emoji, _ in color_roles:
+            await message.add_reaction(emoji)
+
+        gv.options['id_message_on_add_reaction'] = message.id
+
+        with open('config.json', 'r', encoding='utf-8') as file:
+            config = json.load(file)
+
+        config['options'] = gv.options
+
+        with open('config.json', 'w', encoding='utf-8') as file:
+            json.dump(config, file)
 
 
 async def setup(bot):

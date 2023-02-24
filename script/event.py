@@ -94,6 +94,10 @@ class Events(commands.Cog):
             if payload.message_id == save_message_id:
                 for emoji, role_id in self.color_roles:
                     if payload.emoji == emoji:
+                        for emoji2, role_id2 in self.color_roles:
+                            if r := user.get_role(role_id2):
+                                await user.remove_roles(r)
+                                await message.remove_reaction(emoji2, user)
                         role = guild.get_role(role_id)
                         await user.add_roles(role)
                         break

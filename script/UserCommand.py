@@ -2,6 +2,7 @@ import re
 import json
 import discord
 import random
+import requests
 from script import AdminCommand, OwnerCommand
 from loguru import logger
 from discord import app_commands
@@ -9,7 +10,7 @@ from discord.ext import commands
 from decorators.decor_command import in_channel, write_log
 from utils.utils_methods import user_is_admin, user_is_owner, get_help_from_class, get_funcs_on_name_or_aliases, \
     get_all_group, get_param_on_func
-from utils.global_variables import UserColor, OwnerID
+from utils.global_variables import UserColor, OwnerID, IAM_TOKEN
 
 
 class UserCommand(commands.Cog):
@@ -197,6 +198,34 @@ class UserCommand(commands.Cog):
                 )
 
             await ctx.send(embed=embed)
+
+    @commands.hybrid_command(description='перевод текстов')
+    @write_log('translate')
+    @logger.catch
+    async def translate(self, ctx: commands.context.Context, *, texts: str = None):
+        if ctx.author.bot:
+            return
+
+        if not texts:
+            await ctx.send('текст не передан')
+            return
+
+        body = {
+            "targetLanguageCode": 'ru',
+            "texts": texts
+        }
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Api-Key {0}".format(IAM_TOKEN)
+        }
+
+        response = requests.post('https://translate.api.cloud.yandex.net/translate/v2/translate',
+                                 json=body,
+                                 headers=headers
+                                 )
+
+        await ctx.send(response.text)
 
 
 async def setup(bot):

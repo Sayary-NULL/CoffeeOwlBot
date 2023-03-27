@@ -59,6 +59,7 @@ def main():
     gv.DataBaseClass = DB(config['file_db'])
     token = config['token_owl']
     gv.options = config.get('options', dict())
+    gv.IAM_TOKEN = config.get('iam_coffeebot_yandex')
 
     if arg.debug or arg.test:
         logger_level = 'DEBUG'

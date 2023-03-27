@@ -11,3 +11,4 @@ ISDebug = False
 ISPostNasaNews = False
 NowPostNasaNews = False
 options: dict = dict()
+IAM_TOKEN = None

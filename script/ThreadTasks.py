@@ -1,3 +1,4 @@
+import json
 import re
 import pytz
 import discord
@@ -80,8 +81,12 @@ class ThreadTasks(commands.Cog):
             for repl_item in replaces:
                 description = description.replace(*repl_item)
 
+            ru_description = self.translate(description)
+
             emd = discord.Embed(color=gv.AdminColor)
-            emd.add_field(name='**Описание**', value=description)
+            emd.add_field(name='**Description**', value=description)
+            if ru_description:
+                emd.add_field(name='**Описание**', value=ru_description, inline=True)
             emd.add_field(name='**Ссылка на большую версию**', value=f'https://apod.nasa.gov/apod/{href["href"]}',
                           inline=False)
             emd.set_image(url=f'https://apod.nasa.gov/apod/{min_src}')
@@ -92,6 +97,34 @@ class ThreadTasks(commands.Cog):
     async def before_news_nasa(self):
         logger.info('await connect bot')
         await self.bot.wait_until_ready()
+
+    def translate(self, text: str):
+        if not text:
+            return
+        body = {
+            "targetLanguageCode": 'ru',
+            "texts": text
+        }
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Api-Key {0}".format(gv.IAM_TOKEN)
+        }
+
+        response = requests.post('https://translate.api.cloud.yandex.net/translate/v2/translate',
+                                 json=body,
+                                 headers=headers
+                                 )
+
+        try:
+            js = json.loads(response.text)
+            if 'code' in js:
+                logger.error(f'Request error: {response.text}')
+                return ''
+            return js.get('translations', [dict()])[0].get('text', '')
+        except Exception as e:
+            logger.error(f'Request error: {e}')
+            return ''
 
 
 async def setup(bot):

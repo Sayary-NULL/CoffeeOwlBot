@@ -90,7 +90,7 @@ class UserCommand(commands.Cog):
         emd = discord.Embed(color=UserColor)
         emd.add_field(name='**Предупреждение**', value=f'Пользователю: {user.mention} - вынесено предупреждение', inline=False)
         emd.set_image(url='https://media.discordapp.net/attachments/462236317926031370/1003229964843356190/--.jpg?width=975&height=671')
-        emd.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon_url)
+        emd.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon.url)
         await ctx.send(embed=emd)
 
     @commands.hybrid_command(aliases=['версия'], description='Показывает текущую версию бота')

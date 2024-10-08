@@ -124,6 +124,6 @@ class DB:
 
     def _str_to_data(self, data: str):
         data = json.loads(data)
-        match data['type']:
-            case 'date':
-                return datetime.datetime.strptime(data['data'], '%Y-%m-%d').date()
+        type = data.get('type')
+        if type == 'date':
+            return datetime.datetime.strptime(data['data'], '%Y-%m-%d').date()

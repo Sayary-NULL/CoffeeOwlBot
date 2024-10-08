@@ -189,19 +189,19 @@ class AdminCommand(commands.Cog):
             count_warns += int(count_warns / 5)*0.25
 
         lvl = round(count_warns) % 5
-        if lvl = 0:
+        if lvl == 0:
             await ctx.send(f'{ctx.author.mention}, к {user.mention} применен первый уровень наказания')
             await user.timeout(datetime.timedelta(minutes=5))
-        elif lvl = 1:
+        elif lvl == 1:
             await ctx.send(f'{ctx.author.mention}, к {user.mention} применен второй уровень наказания')
             await user.timeout(datetime.timedelta(days=1))
-        elif lvl = 2:
+        elif lvl == 2:
             await ctx.send(f'{ctx.author.mention}, к {user.mention} применен третий уровень наказания')
             await user.timeout(datetime.timedelta(weeks=1))
-        elif lvl = 3:
+        elif lvl == 3:
             await ctx.send(f'{ctx.author.mention}, к {user.mention} применен четвертый уровень наказания')
             await user.timeout(datetime.timedelta(weeks=1))
-        elif lvl = 4:
+        elif lvl == 4:
             await ctx.send(f'{ctx.author.mention}, к {user.mention} применен пятый уровень наказания')
             await user.timeout(datetime.timedelta(weeks=2))
 

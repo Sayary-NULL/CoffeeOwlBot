@@ -188,22 +188,22 @@ class AdminCommand(commands.Cog):
         if count_warns > 10:
             count_warns += int(count_warns / 5)*0.25
 
-        match round(count_warns) % 5:
-            case 0:
-                await ctx.send(f'{ctx.author.mention}, к {user.mention} применен первый уровень наказания')
-                await user.timeout(datetime.timedelta(minutes=5))
-            case 1:
-                await ctx.send(f'{ctx.author.mention}, к {user.mention} применен второй уровень наказания')
-                await user.timeout(datetime.timedelta(days=1))
-            case 2:
-                await ctx.send(f'{ctx.author.mention}, к {user.mention} применен третий уровень наказания')
-                await user.timeout(datetime.timedelta(weeks=1))
-            case 3:
-                await ctx.send(f'{ctx.author.mention}, к {user.mention} применен четвертый уровень наказания')
-                await user.timeout(datetime.timedelta(weeks=1))
-            case 4:
-                await ctx.send(f'{ctx.author.mention}, к {user.mention} применен пятый уровень наказания')
-                await user.timeout(datetime.timedelta(weeks=2))
+        lvl = round(count_warns) % 5
+        if lvl = 0:
+            await ctx.send(f'{ctx.author.mention}, к {user.mention} применен первый уровень наказания')
+            await user.timeout(datetime.timedelta(minutes=5))
+        elif lvl = 1:
+            await ctx.send(f'{ctx.author.mention}, к {user.mention} применен второй уровень наказания')
+            await user.timeout(datetime.timedelta(days=1))
+        elif lvl = 2:
+            await ctx.send(f'{ctx.author.mention}, к {user.mention} применен третий уровень наказания')
+            await user.timeout(datetime.timedelta(weeks=1))
+        elif lvl = 3:
+            await ctx.send(f'{ctx.author.mention}, к {user.mention} применен четвертый уровень наказания')
+            await user.timeout(datetime.timedelta(weeks=1))
+        elif lvl = 4:
+            await ctx.send(f'{ctx.author.mention}, к {user.mention} применен пятый уровень наказания')
+            await user.timeout(datetime.timedelta(weeks=2))
 
         gv.DataBaseClass.set_warns(user.id, count_warns)
 

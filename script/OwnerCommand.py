@@ -46,7 +46,7 @@ class OwnerCommand(commands.Cog):
     @write_log('ehco')
     @logger.catch
     @checks(is_owner, in_channel(is_base=True))
-    async def echo(self, ctx: commands.context.Context, channel: discord.Channel, text):
+    async def echo(self, ctx: commands.context.Context, channel: discord.TextChannel, text):
         await channel.send(text)
 
     @commands.command()

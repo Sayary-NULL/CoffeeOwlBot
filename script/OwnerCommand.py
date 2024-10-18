@@ -43,6 +43,13 @@ class OwnerCommand(commands.Cog):
         await ctx.send('Ok')
 
     @commands.command()
+    @write_log('ehco')
+    @logger.catch
+    @checks(is_owner, in_channel(is_base=True))
+    async def echo(self, ctx: commands.context.Context, channel: discord.Channel, text):
+        await channel.send(text)
+
+    @commands.command()
     @write_log('sleep')
     @logger.catch
     @checks(is_owner, in_channel(is_base=True))
